@@ -12,7 +12,7 @@ import DataObjects.DataArcMatrix;
 import DataObjects.DataComplexVector;
 import DataObjects.DataTransfer;
 import DataOnly.ComplexValue;
-import DataOnly.ComplexVector;
+import DataOnly.Psivector;
 import DataOnly.TransferOperation;
 import Enumerations.PetriObjectType;
 import Enumerations.TransitionOperation;
@@ -31,7 +31,7 @@ public class Functions implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public float GetProbabilitySum(ComplexVector resD) {
+	public float GetProbabilitySum(Psivector resD) {
 		float result = 0.0f;
 		for (ComplexValue item : resD.ComplexArray) {
 			result += item.Real;

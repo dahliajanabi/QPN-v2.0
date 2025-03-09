@@ -32,4 +32,9 @@ public class ComplexValue implements Cloneable, Serializable {
 			return Real.toString();
 		}
 	}
+
+	public ComplexValue Prod(ComplexValue v) {
+		return new ComplexValue((Real * v.Real) - (Imaginary * v.Imaginary),
+				(Real * v.Imaginary) + (Imaginary * v.Real));
+	}
 }

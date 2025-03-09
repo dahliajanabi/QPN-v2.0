@@ -7,7 +7,7 @@ import DataObjects.DataArcMatrix;
 import DataObjects.DataComplexVector;
 import DataOnly.ArcMatrix;
 import DataOnly.ComplexValue;
-import DataOnly.ComplexVector;
+import DataOnly.Psivector;
 import DataObjects.DataTransfer;
 import Enumerations.Orientation;
 import Enumerations.TransitionOperation;
@@ -174,8 +174,8 @@ public class Activation implements Serializable {
 		}
 		DataArcMatrix A = (DataArcMatrix) constantValue;
 		DataComplexVector result = (DataComplexVector) ((DataComplexVector) input).clone();
-		ComplexVector resC = (ComplexVector) result.GetValue();
-		ComplexVector resD = new ComplexVector(resC.Size, resC.ComplexArray);
+		Psivector resC = (Psivector) result.GetValue();
+		Psivector resD = new Psivector(resC.Size, resC.ComplexArray);
 
 		for (int i = 0; i < A.Value.Matrix.length; i++) {
 			ComplexValue sum = new ComplexValue(0.0F, 0.0F);
@@ -190,7 +190,6 @@ public class Activation implements Serializable {
 			}
 			resD.ComplexArray.set(i, sum);
 		}
-		resD.Orientation = orientation;
 		result.SetName(OutputPlaceName);
 		result.SetValue(resD);
 
@@ -216,9 +215,9 @@ public class Activation implements Serializable {
 
 		DataArcMatrix A = (DataArcMatrix) constantValue;
 		DataComplexVector result = (DataComplexVector) ((DataComplexVector) input1).clone();
-		ComplexVector resC = (ComplexVector) result.GetValue();
+		Psivector resC = (Psivector) result.GetValue();
 		resC.ComplexArray.addAll(((DataComplexVector) input2).Value.ComplexArray);
-		ComplexVector resD = new ComplexVector(resC.Size * 2, resC.ComplexArray);
+		Psivector resD = new Psivector(resC.Size * 2, resC.ComplexArray);
 
 		for (int i = 0; i < A.Value.Matrix.length; i++) {
 			ComplexValue sum = new ComplexValue(0.0F, 0.0F);

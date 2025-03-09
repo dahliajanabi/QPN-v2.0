@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import DataOnly.ComplexValue;
-import DataOnly.ComplexVector;
+import DataOnly.Psivector;
 import Enumerations.PetriObjectType;
 import Interfaces.PetriObject;
 
@@ -37,7 +37,7 @@ public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Ser
 		return PetriObjectType.DataComplexVector;
 	}
 
-	public ComplexVector Value;
+	public Psivector Value;
 
 	@Override
 	public Object GetValue() {
@@ -50,8 +50,8 @@ public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Ser
 			Value = null;
 			SetToken(false);
 		}
-		if (value instanceof ComplexVector) {
-			Value = (ComplexVector) value;
+		if (value instanceof Psivector) {
+			Value = (Psivector) value;
 			SetToken(true);
 		}
 	}
@@ -65,7 +65,7 @@ public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Ser
 		for (ComplexValue c : Value.ComplexArray) {
 			ComplexArray.add(new ComplexValue(c.Real,c.Imaginary));
 		}
-		ComplexVector cv = new ComplexVector(Value.Size,
+		Psivector cv = new Psivector(Value.Size,
 				ComplexArray);
 		result.SetValue(cv);
 		return result;

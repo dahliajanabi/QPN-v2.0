@@ -10,7 +10,7 @@ import DataObjects.DataArcMatrix;
 import DataObjects.DataComplexVector;
 import DataOnly.ArcMatrix;
 import DataOnly.ComplexValue;
-import DataOnly.ComplexVector;
+import DataOnly.Psivector;
 import Enumerations.TransitionCondition;
 import Enumerations.TransitionOperation;
 
@@ -33,7 +33,7 @@ public class test1 {
 
 		DataComplexVector p1 = new DataComplexVector();
 		p1.SetName("p1");
-		p1.Value = new ComplexVector(2, new ComplexValue(5.0f, 3.0f), new ComplexValue(1.0f, 2.0f));
+		p1.Value = new Psivector(2, new ComplexValue(5.0f, 3.0f), new ComplexValue(1.0f, 2.0f));
 		pn.PlaceList.add(p1);
 
 		DataComplexVector p2 = new DataComplexVector();

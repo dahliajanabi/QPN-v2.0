@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import DataObjects.DataComplexVector;
 import DataOnly.ComplexValue;
-import DataOnly.ComplexVector;
+import DataOnly.Psivector;
 import Utilities.DataOverNetwork;
 
 import javax.swing.JTextPane;
@@ -105,7 +105,7 @@ public class InputComplex extends JFrame {
 
 						DataComplexVector p1 = new DataComplexVector();
 						p1.SetName(txtTargetPlaceName.getText());
-						p1.Value = new ComplexVector(2,
+						p1.Value = new Psivector(2,
 								new ComplexValue(Float.parseFloat(txtReal1.getText()),
 										Float.parseFloat(txtImaginary1.getText())),
 								new ComplexValue(Float.parseFloat(txtReal2.getText()),

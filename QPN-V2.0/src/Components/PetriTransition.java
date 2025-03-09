@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import DataObjects.DataComplexVector;
 import DataOnly.ComplexValue;
-import DataOnly.ComplexVector;
+import DataOnly.Psivector;
 import Enumerations.PetriObjectType;
 import Interfaces.PetriObject;
 import Utilities.Functions;
@@ -110,9 +110,8 @@ public class PetriTransition implements PetriObject, Serializable {
 						.clone();
 				result = new DataComplexVector();
 				result.SetName(currentDataComplexVector.GetName());
-				ComplexVector cv = new ComplexVector(
+				Psivector cv = new Psivector(
 						currentDataComplexVector.Value.Size,
-						currentDataComplexVector.Value.Orientation,
 						currentDataComplexVector.Value.ComplexArray);
 				result.SetValue(cv);
 
