@@ -8,8 +8,11 @@ public enum PetriObjectType implements Serializable{
 	PetriPlace,
 	PetriTransition,
 	PetriData,
-	DataComplexVector,
-	DataArcMatrix,
+	DataUnitaryMatrix,
 	DataTransfer,
-	
+	DataPsivector,
+	DataVvector,
+	DataTheta,
+	DataDigitalPlace,
+	DataUnitaryThetaMatrix,
 }

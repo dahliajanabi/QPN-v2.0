@@ -2,11 +2,11 @@ package DataObjects;
 
 import java.io.Serializable;
 
-import DataOnly.ArcMatrix;
+import DataOnly.UnitaryMatrix;
 import Enumerations.PetriObjectType;
 import Interfaces.PetriObject;
 
-public class DataArcMatrix implements Interfaces.PetriObject, Cloneable, Serializable {
+public class DataUnitaryMatrix implements Interfaces.PetriObject, Cloneable, Serializable {
 	/**
 	 * 
 	 */
@@ -37,10 +37,10 @@ public class DataArcMatrix implements Interfaces.PetriObject, Cloneable, Seriali
 
 	@Override
 	public PetriObjectType GetType() {
-		return PetriObjectType.DataArcMatrix;
+		return PetriObjectType.DataUnitaryMatrix;
 	}
 
-	public ArcMatrix Value = null;
+	public UnitaryMatrix Value = null;
 
 	@Override
 	public Object GetValue() {
@@ -53,15 +53,15 @@ public class DataArcMatrix implements Interfaces.PetriObject, Cloneable, Seriali
 			Value = null;
 			SetToken(false);
 		}
-		if (value instanceof ArcMatrix) {
-			Value = (ArcMatrix) value;
+		if (value instanceof UnitaryMatrix) {
+			Value = (UnitaryMatrix) value;
 			SetToken(true);
 		}
 	}
 
 	// Overriding clone() method of Object class
 	public PetriObject clone() throws CloneNotSupportedException {
-		return (DataArcMatrix) super.clone();
+		return (DataUnitaryMatrix) super.clone();
 	}
 
 	public boolean Printable = true;

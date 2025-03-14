@@ -11,8 +11,8 @@ public class Vvector implements Cloneable, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// Overriding clone() method of Object class
-	public Psivector clone() throws CloneNotSupportedException {
-		return (Psivector) super.clone();
+	public Vvector clone() throws CloneNotSupportedException {
+		return (Vvector) super.clone();
 	}
 
 	public ArrayList<QBit> QBits = new ArrayList<QBit>();

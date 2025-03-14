@@ -3,29 +3,29 @@ package DataOnly;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ArcMatrix implements Cloneable, Serializable {
+public class UnitaryThetaMatrix implements Cloneable, Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	// Overriding clone() method of Object class
-	public ArcMatrix clone() throws CloneNotSupportedException {
-		return (ArcMatrix) super.clone();
+	public UnitaryMatrix clone() throws CloneNotSupportedException {
+		return (UnitaryMatrix) super.clone();
 	}
 
-	public Float[][] Matrix;
+	public UnitaryThetaMatrixValue[][] Matrix;
 
-	public ArcMatrix(int rowCount, int ColCount) {
-		Matrix = new Float[rowCount][ColCount];
+	public UnitaryThetaMatrix(int rowCount, int ColCount) {
+		Matrix = new UnitaryThetaMatrixValue[rowCount][ColCount];
 	}
 	
-	public ArcMatrix(int rowCount, int ColCount, Float... arguments) {
+	public UnitaryThetaMatrix(int rowCount, int ColCount, UnitaryThetaMatrixValue... arguments) {
 		if (arguments.length != rowCount * ColCount) {
-			System.err.print("ArcMatrix parameters are wrong the number of values doesnt match the matrix");
+			System.err.print("UnitaryThetaMatrix parameters are wrong the number of values doesnt match the matrix");
 			return;
 		}
-		Matrix = new Float[rowCount][ColCount];
+		Matrix = new UnitaryThetaMatrixValue[rowCount][ColCount];
 		int index = 0;
 		if (arguments.length == rowCount * ColCount)
 			for (int i = 0; i < rowCount; i++) {
@@ -51,3 +51,4 @@ public class ArcMatrix implements Cloneable, Serializable {
 		return "{" + toPrint + "}";
 	}
 }
+

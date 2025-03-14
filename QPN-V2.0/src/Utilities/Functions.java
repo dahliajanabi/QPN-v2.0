@@ -8,8 +8,8 @@ import Components.Condition;
 import Components.GuardMapping;
 import Components.PetriNet;
 import Components.PetriTransition;
-import DataObjects.DataArcMatrix;
-import DataObjects.DataComplexVector;
+import DataObjects.DataUnitaryMatrix;
+import DataObjects.DataPsivector;
 import DataObjects.DataTransfer;
 import DataOnly.ComplexValue;
 import DataOnly.Psivector;
@@ -113,16 +113,16 @@ public class Functions implements Serializable {
 		for (Place p : pd.Places) {
 			PetriObject pls;
 			switch (p.Type) {
-			case DataComplexVector: {
-				pls = new DataComplexVector();
+			case DataPsivector: {
+				pls = new DataPsivector();
 				break;
 			}
-			case DataArcMatrix: {
-				pls = new DataArcMatrix();
+			case DataUnitaryMatrix: {
+				pls = new DataUnitaryMatrix();
 				break;
 			}
 			default:
-				pls = new DataComplexVector();
+				pls = new DataPsivector();
 				break;
 			}
 
@@ -141,12 +141,12 @@ public class Functions implements Serializable {
 		for (Place p : pd.ConstantPlaces) {
 			PetriObject pls;
 			switch (p.Type) {
-			case DataComplexVector: {
-				pls = new DataComplexVector();
+			case DataPsivector: {
+				pls = new DataPsivector();
 				break;
 			}
-			case DataArcMatrix: {
-				pls = new DataArcMatrix();
+			case DataUnitaryMatrix: {
+				pls = new DataUnitaryMatrix();
 				break;
 			}
 			case DataTransfer: {
@@ -154,7 +154,7 @@ public class Functions implements Serializable {
 				break;
 			}
 			default:
-				pls = new DataArcMatrix();
+				pls = new DataUnitaryMatrix();
 				break;
 			}
 

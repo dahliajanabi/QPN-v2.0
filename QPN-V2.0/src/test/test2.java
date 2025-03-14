@@ -6,9 +6,9 @@ import Components.GuardMapping;
 import Components.PetriNet;
 import Components.PetriNetWindow;
 import Components.PetriTransition;
-import DataObjects.DataArcMatrix;
-import DataObjects.DataComplexVector;
-import DataOnly.ArcMatrix;
+import DataObjects.DataUnitaryMatrix;
+import DataObjects.DataPsivector;
+import DataOnly.UnitaryMatrix;
 import DataOnly.ComplexValue;
 import DataOnly.Psivector;
 import Enumerations.LogicConnector;
@@ -21,22 +21,22 @@ public class test2 {
 		pn.PetriNetName = "QPN joined";
 		pn.NetworkPort = 1080;
 
-		DataArcMatrix constantValue1 = new DataArcMatrix();
+		DataUnitaryMatrix constantValue1 = new DataUnitaryMatrix();
 		constantValue1.SetName("A123");
-		constantValue1.SetValue(new ArcMatrix(2, 4, 3.0f, 5.0f, 6.0f, 8.0f, 7.0f, 2.0f, 1.0f, 4.0f));
+		constantValue1.SetValue(new UnitaryMatrix(2, 4, 3.0f, 5.0f, 6.0f, 8.0f, 7.0f, 2.0f, 1.0f, 4.0f));
 		pn.ConstantPlaceList.add(constantValue1);
 
-		DataComplexVector p1 = new DataComplexVector();
+		DataPsivector p1 = new DataPsivector();
 		p1.SetName("p1");
 		p1.Value = new Psivector(2, new ComplexValue(1.0f, 3.0f), new ComplexValue(5.0f, 2.0f));
 		pn.PlaceList.add(p1);
 
-		DataComplexVector p2 = new DataComplexVector();
+		DataPsivector p2 = new DataPsivector();
 		p2.SetName("p2");
 		p2.Value = new Psivector(2, new ComplexValue(2.0f, 3.0f), new ComplexValue(1.0f, 5.0f));
 		pn.PlaceList.add(p2);
 
-		DataComplexVector p3 = new DataComplexVector();
+		DataPsivector p3 = new DataPsivector();
 		p3.SetName("p3");
 		pn.PlaceList.add(p3);
 

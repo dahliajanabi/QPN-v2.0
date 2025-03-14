@@ -2,7 +2,7 @@ package Components;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import DataObjects.DataComplexVector;
+import DataObjects.DataPsivector;
 import DataOnly.ComplexValue;
 import DataOnly.Psivector;
 import Enumerations.PetriObjectType;
@@ -105,10 +105,10 @@ public class PetriTransition implements PetriObject, Serializable {
 			PetriObject currentInputPlace = util.GetPetriObjectByName(string, Parent.PlaceList);
 			PetriObject result = null;
 
-			if (currentInputPlace instanceof DataComplexVector) {
-				DataComplexVector currentDataComplexVector = (DataComplexVector) ((DataComplexVector) currentInputPlace)
+			if (currentInputPlace instanceof DataPsivector) {
+				DataPsivector currentDataComplexVector = (DataPsivector) ((DataPsivector) currentInputPlace)
 						.clone();
-				result = new DataComplexVector();
+				result = new DataPsivector();
 				result.SetName(currentDataComplexVector.GetName());
 				Psivector cv = new Psivector(
 						currentDataComplexVector.Value.Size,

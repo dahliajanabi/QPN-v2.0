@@ -1,14 +1,11 @@
 package DataObjects;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import DataOnly.ComplexValue;
-import DataOnly.Psivector;
+import DataOnly.Theta;
 import Enumerations.PetriObjectType;
 import Interfaces.PetriObject;
 
-public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Serializable {
+public class DataTheta implements Interfaces.PetriObject, Cloneable, Serializable {
 	/**
 	 * 
 	 */
@@ -34,10 +31,10 @@ public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Ser
 
 	@Override
 	public PetriObjectType GetType() {
-		return PetriObjectType.DataComplexVector;
+		return PetriObjectType.DataTheta;
 	}
 
-	public Psivector Value;
+	public Theta Value;
 
 	@Override
 	public Object GetValue() {
@@ -50,23 +47,18 @@ public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Ser
 			Value = null;
 			SetToken(false);
 		}
-		if (value instanceof Psivector) {
-			Value = (Psivector) value;
+		if (value instanceof Theta) {
+			Value = (Theta) value;
 			SetToken(true);
 		}
 	}
 
 	// Overriding clone() method of Object class
 	public PetriObject clone() throws CloneNotSupportedException {
-		DataComplexVector result = new DataComplexVector();
+		DataTheta result = new DataTheta();
 		result.SetName(name);
-		
-		ArrayList<ComplexValue> ComplexArray = new ArrayList<ComplexValue>();
-		for (ComplexValue c : Value.ComplexArray) {
-			ComplexArray.add(new ComplexValue(c.Real,c.Imaginary));
-		}
-		Psivector cv = new Psivector(Value.Size,
-				ComplexArray);
+	
+		Theta cv = new Theta(Value.Angle);	
 		result.SetValue(cv);
 		return result;
 		//return (DataComplexVector) super.clone();
@@ -119,9 +111,10 @@ public class DataComplexVector implements Interfaces.PetriObject, Cloneable, Ser
 	@Override
 	public String ToStringWithParam(boolean b) {
 		if (Value != null) {
-			return GetName() + "|" +"["+ Value.toString(b) +"]"+ "|";
+			return GetName() + "|" +"["+ Value.toString() +"]"+ "|";
 		} else {
 			return GetName() + "(Null)";
 		}
 	}
 }
+
