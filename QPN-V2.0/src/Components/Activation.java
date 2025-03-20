@@ -6,10 +6,11 @@ import java.util.Iterator;
 
 import DataObjects.DataUnitaryMatrix;
 import DataObjects.DataUnitaryThetaMatrix;
-import DataObjects.DataPsivector;
+import DataObjects.DataQplace;
 import DataObjects.DataTheta;
 import DataOnly.UnitaryMatrix;
 import DataOnly.ComplexValue;
+import DataOnly.Qplace;
 import DataOnly.Psivector;
 import DataOnly.Theta;
 import DataObjects.DataTransfer;
@@ -115,9 +116,6 @@ public class Activation implements Serializable {
 
 	public void Activate() throws CloneNotSupportedException {
 
-		if (Operation == TransitionOperation.Move)
-			Move();
-
 		if (Operation == TransitionOperation.UnitaryMatrix)
 			UnitaryMatrix(0);
 
@@ -137,41 +135,10 @@ public class Activation implements Serializable {
 			MakeNull();
 	}
 
-	private void Move() throws CloneNotSupportedException {
-
-		PetriObject temp = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
-		if (temp == null) {
-			temp = util.GetFromListByName(InputPlaceName, Parent.Parent.ConstantPlaceList);
-		}
-		PetriObject result = null;
-
-		if (temp instanceof DataUnitaryMatrix) {
-			result = (PetriObject) ((DataUnitaryMatrix) temp).clone();
-		}
-
-		if (temp instanceof DataPsivector) {
-			result = (PetriObject) ((DataPsivector) temp).clone();
-		}
-
-		if (result == null) {
-			return;
-		}
-
-		if (OutputPlaceName.contains("-")) {
-			result.SetName(OutputPlaceName.split("-")[1]);
-		} else {
-			result.SetName(OutputPlaceName);
-		}
-
-		result.SetValue(temp.GetValue());
-
-		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
-	}
-
 	private void UnitaryMatrix(int orientation) throws CloneNotSupportedException {
 
 		PetriObject input = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
-		if (input == null && !(input instanceof DataPsivector)) {
+		if (input == null && !(input instanceof DataQplace)) {
 			return;
 		}
 
@@ -180,22 +147,22 @@ public class Activation implements Serializable {
 			return;
 		}
 		DataUnitaryMatrix A = (DataUnitaryMatrix) constantValue;
-		DataPsivector result = (DataPsivector) ((DataPsivector) input).clone();
-		Psivector resC = (Psivector) result.GetValue();
-		Psivector resD = new Psivector(resC.Size, resC.ComplexArray);
+		DataQplace result = (DataQplace) ((DataQplace) input).clone();
+		Qplace resC = (Qplace) result.GetValue();
+		Qplace resD = new Qplace(new Psivector(resC.Psi.Size, resC.Psi.ComplexArray), resC.PrintingSetting);
 
 		for (int i = 0; i < A.Value.Matrix.length; i++) {
 			ComplexValue sum = new ComplexValue(0.0F, 0.0F);
 
 			for (int j = 0; j < A.Value.Matrix[0].length; j++) {
-				ComplexValue cv1 = resC.ComplexArray.get(j);
+				ComplexValue cv1 = resC.Psi.ComplexArray.get(j);
 				Float real = A.Value.Matrix[i][j] * cv1.Real;
 				Float imaginary = A.Value.Matrix[i][j] * cv1.Imaginary;
 				ComplexValue cv2 = new ComplexValue(real, imaginary);
 				sum.Real += cv2.Real;
 				sum.Imaginary += cv2.Imaginary;
 			}
-			resD.ComplexArray.set(i, sum);
+			resD.Psi.ComplexArray.set(i, sum);
 		}
 		result.SetName(OutputPlaceName);
 		result.SetValue(resD);
@@ -205,13 +172,8 @@ public class Activation implements Serializable {
 
 	private void ThetaUnitaryMatrix() throws CloneNotSupportedException {
 
-		PetriObject input = util.GetFromListByName(InputPlaceName1, Parent.TempMarking);
-		if (input == null && !(input instanceof DataPsivector)) {
-			return;
-		}
-
-		PetriObject input2 = util.GetFromListByName(InputPlaceName2, Parent.Parent.ConstantPlaceList);
-		if (input2 == null && !(input2 instanceof DataTheta)) {
+		PetriObject input = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
+		if (input == null && !(input instanceof DataQplace)) {
 			return;
 		}
 
@@ -225,25 +187,29 @@ public class Activation implements Serializable {
 		for (int i = 0; i < A.Value.Matrix[0].length; i++)
 			for (int j = 0; j < A.Value.Matrix[1].length; j++) {
 
-				if( A.Value.Matrix[i][j].Func!= UnitaryThetaMatrixValueFuncType.ConstantValue)
-				{
+				if (A.Value.Matrix[i][j].Func != UnitaryThetaMatrixValueFuncType.ConstantValue) {
+					PetriObject input2 = util.GetFromListByName(A.Value.Matrix[i][j].ThetaPlaceName,
+							Parent.Parent.ConstantPlaceList);
+					if (input2 == null && !(input2 instanceof DataTheta)) {
+						return;
+					}
 					switch (A.Value.Matrix[i][j].Func) {
-					case  Cos:
-						A.Value.Matrix[i][j].Value= (float) Math.cos(((Theta)input2.GetValue()).Angle);
+					case Cos:
+						A.Value.Matrix[i][j].Value = (float) Math.cos(((Theta) input2.GetValue()).Angle);
 						break;
-					case  Sin:
-						A.Value.Matrix[i][j].Value= (float) Math.sin(((Theta)input2.GetValue()).Angle);
+					case Sin:
+						A.Value.Matrix[i][j].Value = (float) Math.sin(((Theta) input2.GetValue()).Angle);
 						break;
-					case  Tan:
-						A.Value.Matrix[i][j].Value= (float) Math.tan(((Theta)input2.GetValue()).Angle);
+					case Tan:
+						A.Value.Matrix[i][j].Value = (float) Math.tan(((Theta) input2.GetValue()).Angle);
 						break;
-					case  MinusCos:
-						A.Value.Matrix[i][j].Value=(float) - Math.cos(((Theta)input2.GetValue()).Angle);
+					case MinusCos:
+						A.Value.Matrix[i][j].Value = (float) -Math.cos(((Theta) input2.GetValue()).Angle);
 						break;
-					case  MinusSin:
-						A.Value.Matrix[i][j].Value=(float) - Math.sin(((Theta)input2.GetValue()).Angle);
+					case MinusSin:
+						A.Value.Matrix[i][j].Value = (float) -Math.sin(((Theta) input2.GetValue()).Angle);
 						break;
-					case  MinusTan:
+					case MinusTan:
 						A.Value.Matrix[i][j].Value = (float) -Math.tan(((Theta) input2.GetValue()).Angle);
 						break;
 					default:
@@ -252,22 +218,22 @@ public class Activation implements Serializable {
 				}
 			}
 
-		DataPsivector result = (DataPsivector) ((DataPsivector) input).clone();
-		Psivector resC = (Psivector) result.GetValue();
-		Psivector resD = new Psivector(resC.Size, resC.ComplexArray);
+		DataQplace result = (DataQplace) ((DataQplace) input).clone();
+		Qplace resC = (Qplace) result.GetValue();
+		Qplace resD = new Qplace(new Psivector(resC.Psi.Size, resC.Psi.ComplexArray), resC.PrintingSetting);
 
 		for (int i = 0; i < A.Value.Matrix.length; i++) {
 			ComplexValue sum = new ComplexValue(0.0F, 0.0F);
 
 			for (int j = 0; j < A.Value.Matrix[0].length; j++) {
-				ComplexValue cv1 = resC.ComplexArray.get(j);
+				ComplexValue cv1 = resC.Psi.ComplexArray.get(j);
 				Float real = A.Value.Matrix[i][j].Value * cv1.Real;
 				Float imaginary = A.Value.Matrix[i][j].Value * cv1.Imaginary;
 				ComplexValue cv2 = new ComplexValue(real, imaginary);
 				sum.Real += cv2.Real;
 				sum.Imaginary += cv2.Imaginary;
 			}
-			resD.ComplexArray.set(i, sum);
+			resD.Psi.ComplexArray.set(i, sum);
 		}
 		result.SetName(OutputPlaceName);
 		result.SetValue(resD);
@@ -278,12 +244,12 @@ public class Activation implements Serializable {
 	private void UnitaryMatrixJoin2by1() throws CloneNotSupportedException {
 
 		PetriObject input1 = util.GetFromListByName(InputPlaceName1, Parent.TempMarking);
-		if (input1 == null && !(input1 instanceof DataPsivector)) {
+		if (input1 == null && !(input1 instanceof DataQplace)) {
 			return;
 		}
 
 		PetriObject input2 = util.GetFromListByName(InputPlaceName2, Parent.TempMarking);
-		if (input2 == null && !(input2 instanceof DataPsivector)) {
+		if (input2 == null && !(input2 instanceof DataQplace)) {
 			return;
 		}
 
@@ -293,23 +259,23 @@ public class Activation implements Serializable {
 		}
 
 		DataUnitaryMatrix A = (DataUnitaryMatrix) constantValue;
-		DataPsivector result = (DataPsivector) ((DataPsivector) input1).clone();
-		Psivector resC = (Psivector) result.GetValue();
-		resC.ComplexArray.addAll(((DataPsivector) input2).Value.ComplexArray);
-		Psivector resD = new Psivector(resC.Size * 2, resC.ComplexArray);
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+		Qplace resC = (Qplace) result.GetValue();
+		resC.Psi.ComplexArray.addAll(((DataQplace) input2).Value.Psi.ComplexArray);
+		Qplace resD = new Qplace(new Psivector(resC.Psi.Size * 2, resC.Psi.ComplexArray), resC.PrintingSetting);
 
 		for (int i = 0; i < A.Value.Matrix.length; i++) {
 			ComplexValue sum = new ComplexValue(0.0F, 0.0F);
 
 			for (int j = 0; j < A.Value.Matrix[0].length; j++) {
-				ComplexValue cv1 = resC.ComplexArray.get(j);
+				ComplexValue cv1 = resC.Psi.ComplexArray.get(j);
 				Float real = A.Value.Matrix[i][j] * cv1.Real;
 				Float imaginary = A.Value.Matrix[i][j] * cv1.Imaginary;
 				ComplexValue cv2 = new ComplexValue(real, imaginary);
 				sum.Real += cv2.Real;
 				sum.Imaginary += cv2.Imaginary;
 			}
-			resD.ComplexArray.set(i, sum);
+			resD.Psi.ComplexArray.set(i, sum);
 		}
 
 		result.SetName(OutputPlaceName);
@@ -346,8 +312,8 @@ public class Activation implements Serializable {
 			result = (PetriObject) ((DataTransfer) output).clone();
 		}
 
-		if (temp instanceof DataPsivector) {
-			result.SetValue((PetriObject) ((DataPsivector) temp).clone());
+		if (temp instanceof DataQplace) {
+			result.SetValue((PetriObject) ((DataQplace) temp).clone());
 		}
 	}
 

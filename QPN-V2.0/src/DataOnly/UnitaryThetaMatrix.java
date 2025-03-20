@@ -10,8 +10,8 @@ public class UnitaryThetaMatrix implements Cloneable, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// Overriding clone() method of Object class
-	public UnitaryMatrix clone() throws CloneNotSupportedException {
-		return (UnitaryMatrix) super.clone();
+	public UnitaryThetaMatrix clone() throws CloneNotSupportedException {
+		return (UnitaryThetaMatrix) super.clone();
 	}
 
 	public UnitaryThetaMatrixValue[][] Matrix;

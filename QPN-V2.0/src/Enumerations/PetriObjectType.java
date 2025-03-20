@@ -15,4 +15,5 @@ public enum PetriObjectType implements Serializable{
 	DataTheta,
 	DataDigitalPlace,
 	DataUnitaryThetaMatrix,
+	DataQplace
 }

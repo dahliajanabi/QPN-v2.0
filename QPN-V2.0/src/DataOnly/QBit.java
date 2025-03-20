@@ -19,6 +19,6 @@ public class QBit implements Cloneable, Serializable {
 	}
 
 	public String toString(boolean PrintImaginary) {
-		return "Alpha:"+ Alpha.toString() +", Beta:"+Beta.toString();
+		return "Alpha:"+ Alpha.toString(PrintImaginary) +", Beta:"+Beta.toString(PrintImaginary);
 	}
 }

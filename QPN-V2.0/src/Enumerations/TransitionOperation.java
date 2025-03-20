@@ -9,7 +9,5 @@ public enum TransitionOperation implements Serializable{
 	MakeNull,
 	UnitaryMatrix,
 	UnitaryMatrixJoin2by1,
-	Move,
-	MultiplyByRo,
 	ThetaUnitaryMatrix
 }
