@@ -58,11 +58,11 @@ public class DataQplace implements Interfaces.PetriObject, Cloneable, Serializab
 	public PetriObject clone() throws CloneNotSupportedException {
 		DataQplace result = new DataQplace();
 		result.SetName(name);
-	
-		Qplace cv = new Qplace(Value.Psi,Value.V,Value.PrintingSetting);	
+
+		Qplace cv = new Qplace(Value.Psi, Value.V, Value.PrintingSetting);
 		result.SetValue(cv);
 		return result;
-		//return (DataComplexVector) super.clone();
+		// return (DataComplexVector) super.clone();
 	}
 
 	public boolean Printable = true;
@@ -74,7 +74,7 @@ public class DataQplace implements Interfaces.PetriObject, Cloneable, Serializab
 
 	public String toString() {
 		if (Value != null) {
-			return GetName() + "|" +"["+ Value.toString() +"]"+ "|";
+			return GetName() + "|" + "[" + Value.toString() + "]" + "|";
 		} else {
 			return GetName() + "(Null)";
 		}
@@ -112,7 +112,7 @@ public class DataQplace implements Interfaces.PetriObject, Cloneable, Serializab
 	@Override
 	public String ToStringWithParam(boolean b) {
 		if (Value != null) {
-			return GetName() + "|" +"["+ Value.toString() +"]"+ "|";
+			return GetName() + "|" + "[" + Value.toString() + "]" + "|";
 		} else {
 			return GetName() + "(Null)";
 		}

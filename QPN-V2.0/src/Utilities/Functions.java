@@ -39,7 +39,6 @@ public class Functions implements Serializable {
 		return result;
 	}
 
-
 	public PetriObject GetPetriObjectByName(String name, ArrayList<PetriObject> list) {
 		for (PetriObject petriObject : list) {
 			if (petriObject != null)
@@ -52,7 +51,7 @@ public class Functions implements Serializable {
 	public Integer GetIndexByName(String name, ArrayList<PetriObject> list) {
 		if (name == null)
 			return -1;
-		if (!name.contains("-"))  {
+		if (!name.contains("-")) {
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i) != null)
 					if (list.get(i).GetName().equals(name))
@@ -78,7 +77,7 @@ public class Functions implements Serializable {
 		if (index == -1)
 			return false;
 
-		if (!name.contains("-"))  {
+		if (!name.contains("-")) {
 			list.set(index, data);
 			return true;
 		}
@@ -266,4 +265,19 @@ public class Functions implements Serializable {
 		}
 		return con1;
 	}
+
+	public ComplexValue Power2(ComplexValue v) {
+		ComplexValue r = new ComplexValue((v.Real * v.Real) - (v.Imaginary * v.Imaginary), 2 * (v.Real * v.Imaginary));
+		return r;
+	}
+
+	public ComplexValue sqrt(ComplexValue v) {
+		double magnitude = Math.sqrt(v.Real * v.Real + v.Imaginary * v.Imaginary);
+		double angle = Math.atan2(v.Imaginary, v.Real);
+		double newMagnitude = Math.sqrt(magnitude);
+		double newAngle = angle / 2;
+		return new ComplexValue((float) (newMagnitude * Math.cos(newAngle)),
+				(float) (newMagnitude * Math.sin(newAngle)));
+	}
+
 }

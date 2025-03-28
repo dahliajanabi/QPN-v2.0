@@ -7,10 +7,13 @@ import Components.PetriNet;
 import Components.PetriNetWindow;
 import Components.PetriTransition;
 import DataObjects.DataPsivector;
+import DataObjects.DataQplace;
 import DataObjects.DataUnitaryMatrix;
 import DataOnly.ComplexValue;
 import DataOnly.Psivector;
+import DataOnly.Qplace;
 import DataOnly.UnitaryMatrix;
+import Enumerations.QplacePrintSetting;
 import Enumerations.TransitionCondition;
 import Enumerations.TransitionOperation;
 
@@ -31,16 +34,17 @@ public class test1 {
 		constantValue2.SetValue(new UnitaryMatrix(2, 2, 2.0f, 3.0f, 4.0f, 1.0f));
 		pn.ConstantPlaceList.add(constantValue2);
 
-		DataPsivector p1 = new DataPsivector();
+		DataQplace p1 = new DataQplace();
 		p1.SetName("p1");
-		p1.Value = new Psivector(2, new ComplexValue(5.0f, 3.0f), new ComplexValue(1.0f, 2.0f));
+		p1.Value =  new Qplace(
+				new Psivector(2, new ComplexValue(5.0f, 3.0f), new ComplexValue(1.0f, 2.0f)),QplacePrintSetting.PsiOnly);
 		pn.PlaceList.add(p1);
 
-		DataPsivector p2 = new DataPsivector();
+		DataQplace p2 = new DataQplace();
 		p2.SetName("p2");
 		pn.PlaceList.add(p2);
 
-		DataPsivector p3 = new DataPsivector();
+		DataQplace p3 = new DataQplace();
 		p3.SetName("p3");
 		pn.PlaceList.add(p3);
 

@@ -3,9 +3,11 @@ package Components;
 import java.io.Serializable;
 import java.util.ArrayList;
 import DataObjects.DataPsivector;
-import DataOnly.ComplexValue;
+import DataObjects.DataQplace;
 import DataOnly.Psivector;
+import DataOnly.Qplace;
 import Enumerations.PetriObjectType;
+import Enumerations.QplacePrintSetting;
 import Interfaces.PetriObject;
 import Utilities.Functions;
 
@@ -76,11 +78,8 @@ public class PetriTransition implements PetriObject, Serializable {
 	public boolean IsReversible = false;
 
 	public ArrayList<PetriObject> TempMarking;
-
 	public ArrayList<String> InputPlaceName;
-
 	public ArrayList<GuardMapping> GuardMappingList;
-
 	private GuardMapping CurrentGuard;
 
 	public void Activate() throws CloneNotSupportedException {
@@ -106,12 +105,10 @@ public class PetriTransition implements PetriObject, Serializable {
 			PetriObject result = null;
 
 			if (currentInputPlace instanceof DataPsivector) {
-				DataPsivector currentDataComplexVector = (DataPsivector) ((DataPsivector) currentInputPlace)
-						.clone();
+				DataPsivector currentDataComplexVector = (DataPsivector) ((DataPsivector) currentInputPlace).clone();
 				result = new DataPsivector();
 				result.SetName(currentDataComplexVector.GetName());
-				Psivector cv = new Psivector(
-						currentDataComplexVector.Value.Size,
+				Psivector cv = new Psivector(currentDataComplexVector.Value.Size,
 						currentDataComplexVector.Value.ComplexArray);
 				result.SetValue(cv);
 
@@ -121,7 +118,33 @@ public class PetriTransition implements PetriObject, Serializable {
 				}
 				Parent.PlaceList.set(util.GetIndexByName(string, Parent.PlaceList), currentInputPlace);
 			}
-		
+
+			if (currentInputPlace instanceof DataQplace) {
+				DataQplace currentDataComplexVector = (DataQplace) ((DataQplace) currentInputPlace).clone();
+				result = new DataQplace();
+				result.SetName(currentDataComplexVector.GetName());
+				if (currentDataComplexVector.Value.PrintingSetting == QplacePrintSetting.Both) {
+					Qplace cv = new Qplace(currentDataComplexVector.Value.V,
+							currentDataComplexVector.Value.PrintingSetting);
+					result.SetValue(cv);
+				}
+				if (currentDataComplexVector.Value.PrintingSetting == QplacePrintSetting.PsiOnly) {
+					Qplace cv = new Qplace(currentDataComplexVector.Value.Psi,
+							currentDataComplexVector.Value.PrintingSetting);
+					result.SetValue(cv);
+				}
+				if (currentDataComplexVector.Value.PrintingSetting == QplacePrintSetting.VOnly) {
+					Qplace cv = new Qplace(currentDataComplexVector.Value.V,
+							currentDataComplexVector.Value.PrintingSetting);
+					result.SetValue(cv);
+				}
+
+				TempMarking.add(result);
+				if (!IsReversible) {
+					placesToNull.add(currentInputPlace.GetName());
+				}
+				Parent.PlaceList.set(util.GetIndexByName(string, Parent.PlaceList), currentInputPlace);
+			}
 		}
 		return placesToNull;
 	}

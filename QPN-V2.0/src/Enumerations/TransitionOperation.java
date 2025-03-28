@@ -9,5 +9,9 @@ public enum TransitionOperation implements Serializable{
 	MakeNull,
 	UnitaryMatrix,
 	UnitaryMatrixJoin2by1,
-	ThetaUnitaryMatrix
+	ThetaUnitaryMatrix,
+	UnitaryMatrixV,
+	ThetaUnitaryMatrixV,
+	SplitQbit,
+	Measurement
 }
