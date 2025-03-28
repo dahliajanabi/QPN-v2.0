@@ -215,7 +215,6 @@ public class Quantum_Task_V_Level {
 		PetriTransition t3 = new PetriTransition(pn); // gets 2nd qbit!!!!!!!!!!!
 		t3.TransitionName = "t3";
 		t3.InputPlaceName.add("p3");
-		t3.IsReversible = true;
 
 		Condition T3Ct1 = new Condition(t3, "p3", TransitionCondition.NotNull);
 
@@ -231,7 +230,7 @@ public class Quantum_Task_V_Level {
 		PetriTransition t4 = new PetriTransition(pn); //extra transition addd after t3 to multiply the split qbit with unitary matrix I
 		t4.TransitionName = "t4";
 		t4.InputPlaceName.add("p_oIntermediate");
-		t4.IsReversible = true;
+		
 		Condition T4Ct1 = new Condition(t1, "p_oIntermediate", TransitionCondition.NotNull);
 
 		GuardMapping grdT4 = new GuardMapping();
@@ -253,7 +252,6 @@ public class Quantum_Task_V_Level {
 		PetriTransition t5 = new PetriTransition(pn); // gets 1st qbit!!!!!!!!!!!
 		t5.TransitionName = "t5";
 		t5.InputPlaceName.add("p3");
-		t5.IsReversible = true;
 
 		Condition T5Ct1 = new Condition(t5, "p3", TransitionCondition.NotNull);
 
