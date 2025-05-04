@@ -1,4 +1,4 @@
-package UVS.Intersection_1;
+package UVS.Intersection_4;
 
 import java.util.ArrayList;
 
@@ -32,13 +32,13 @@ import Enumerations.TransitionCondition;
 import Enumerations.TransitionOperation;
 import Enumerations.UnitaryThetaMatrixValueFuncType;
 
-public class Intersection_1 {
+public class Intersection_4 {
 
 	public static void main(String[] args) {
 
 		PetriNet pn = new PetriNet();
-		pn.PetriNetName = "Intersection_1";
-		pn.NetworkPort = 1080;
+		pn.PetriNetName = "Intersection_4";
+		pn.NetworkPort = 4080;
 
 		// -------------Unitary Matrixes----------------
 		// RF matrixes-----------------------------------
@@ -257,12 +257,12 @@ public class Intersection_1 {
 		// op channels to other lanes in other intersections
 		DataTransfer p_o1_out = new DataTransfer();
 		p_o1_out.SetName("p_o1_out");
-		p_o1_out.Value = new TransferOperation("localhost", "3084", "p_i1"); // to intersection 3 lane 4
+		p_o1_out.Value = new TransferOperation("localhost", "3082", "p_i1"); // to Intersection 3 lane 3
 		pn.PlaceList.add(p_o1_out);
 
 		DataTransfer p_o2_out = new DataTransfer();
 		p_o2_out.SetName("p_o2_out");
-		p_o2_out.Value = new TransferOperation("localhost", "2081", "p_i1"); // to intersection 2 lane 1
+		p_o2_out.Value = new TransferOperation("localhost", "2082", "p_i1"); // to intersection 2 lane 2
 		pn.PlaceList.add(p_o2_out);
 
 		// ------------Theta Values---------------------------
@@ -543,10 +543,10 @@ public class Intersection_1 {
 		GuardMapping grdT4out = new GuardMapping();
 		grdT4out.condition = T4outCt1;
 
-		grdT4out.Activations.add(new Activation(t4out, "P_s2",TransitionOperation.SendOverNetwork, "p_o1_out"));  
-		grdT4out.Activations.add(new Activation(t4out, "P_s3",TransitionOperation.SendOverNetwork, "p_o2_out"));  
+		grdT4out.Activations.add(new Activation(t4out, "P_s1",TransitionOperation.SendOverNetwork, "p_o1_out"));  
+		grdT4out.Activations.add(new Activation(t4out, "P_s4",TransitionOperation.SendOverNetwork, "p_o2_out"));  
 
-		// the two other outputs are just exits from model (consumed)
+		// the other two exits are just exit from model (consumed)
 
 		// Start PN----------------------------------------------
 

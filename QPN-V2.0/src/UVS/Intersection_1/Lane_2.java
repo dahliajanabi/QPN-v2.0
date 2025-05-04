@@ -325,7 +325,7 @@ public class Lane_2 {
 
 		// Start PN----------------------------------------------
 
-		System.out.println("Quantum Lane_2 started \n ------------------------------");
+		System.out.println("Quantum Lane_2_Intersection_1 started \n ------------------------------");
 		pn.Delay = 1000;
 		pn.clearPrint = true;
 		PetriNetWindow frame = new PetriNetWindow(false);

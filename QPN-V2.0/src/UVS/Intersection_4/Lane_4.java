@@ -1,4 +1,4 @@
-package UVS.Intersection_1;
+package UVS.Intersection_4;
 
 import java.util.ArrayList;
 import Components.Activation;
@@ -30,13 +30,13 @@ import Enumerations.TransitionCondition;
 import Enumerations.TransitionOperation;
 import Enumerations.UnitaryThetaMatrixValueFuncType;
 
-public class Lane_1 {
+public class Lane_4 {
 
 	public static void main(String[] args) {
 
 		PetriNet pn = new PetriNet();
-		pn.PetriNetName = "Lane_1";
-		pn.NetworkPort = 1081;
+		pn.PetriNetName = "Lane_4";
+		pn.NetworkPort = 4084;
 
 		// -------------Unitary Matrixes----------------
 
@@ -136,7 +136,7 @@ public class Lane_1 {
 
 		DataTransfer p_o = new DataTransfer();
 		p_o.SetName("p_o");
-		p_o.Value = new TransferOperation("localhost", "1080", "p_i1");
+		p_o.Value = new TransferOperation("localhost", "4080", "p_i4");
 		pn.PlaceList.add(p_o); // output channel to intersection
 
 		DataQplace p_m = new DataQplace();
@@ -325,7 +325,7 @@ public class Lane_1 {
 
 		// Start PN----------------------------------------------
 
-		System.out.println("Quantum Lane_1_Intersection_1 started \n ------------------------------");
+		System.out.println("Quantum Lane_4_Intersection_4 started \n ------------------------------");
 		pn.Delay = 1000;
 		pn.clearPrint = true;
 		PetriNetWindow frame = new PetriNetWindow(false);

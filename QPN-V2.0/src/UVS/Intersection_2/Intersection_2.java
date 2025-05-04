@@ -1,4 +1,4 @@
-package UVS.Intersection_1;
+package UVS.Intersection_2;
 
 import java.util.ArrayList;
 
@@ -32,13 +32,13 @@ import Enumerations.TransitionCondition;
 import Enumerations.TransitionOperation;
 import Enumerations.UnitaryThetaMatrixValueFuncType;
 
-public class Intersection_1 {
+public class Intersection_2 {
 
 	public static void main(String[] args) {
 
 		PetriNet pn = new PetriNet();
-		pn.PetriNetName = "Intersection_1";
-		pn.NetworkPort = 1080;
+		pn.PetriNetName = "Intersection_2";
+		pn.NetworkPort = 2080;
 
 		// -------------Unitary Matrixes----------------
 		// RF matrixes-----------------------------------
@@ -257,13 +257,14 @@ public class Intersection_1 {
 		// op channels to other lanes in other intersections
 		DataTransfer p_o1_out = new DataTransfer();
 		p_o1_out.SetName("p_o1_out");
-		p_o1_out.Value = new TransferOperation("localhost", "3084", "p_i1"); // to intersection 3 lane 4
+		p_o1_out.Value = new TransferOperation("localhost", "1083", "p_i1"); // to Intersection 1 lane 3
 		pn.PlaceList.add(p_o1_out);
 
 		DataTransfer p_o2_out = new DataTransfer();
 		p_o2_out.SetName("p_o2_out");
-		p_o2_out.Value = new TransferOperation("localhost", "2081", "p_i1"); // to intersection 2 lane 1
+		p_o2_out.Value = new TransferOperation("localhost", "4080", "p_i1"); // to Intersection 4 lane 4
 		pn.PlaceList.add(p_o2_out);
+
 
 		// ------------Theta Values---------------------------
 		// Theta forward---------------------------------------
@@ -543,10 +544,9 @@ public class Intersection_1 {
 		GuardMapping grdT4out = new GuardMapping();
 		grdT4out.condition = T4outCt1;
 
-		grdT4out.Activations.add(new Activation(t4out, "P_s2",TransitionOperation.SendOverNetwork, "p_o1_out"));  
-		grdT4out.Activations.add(new Activation(t4out, "P_s3",TransitionOperation.SendOverNetwork, "p_o2_out"));  
-
-		// the two other outputs are just exits from model (consumed)
+		grdT4out.Activations.add(new Activation(t4out, "P_s1",TransitionOperation.SendOverNetwork, "p_o1_out"));  
+		grdT4out.Activations.add(new Activation(t4out, "P_s2",TransitionOperation.SendOverNetwork, "p_o2_out"));  
+		// the other two outputs are just exit from model (consumed)
 
 		// Start PN----------------------------------------------
 

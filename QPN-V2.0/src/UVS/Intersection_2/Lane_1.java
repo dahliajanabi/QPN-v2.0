@@ -1,4 +1,4 @@
-package UVS.Intersection_1;
+package UVS.Intersection_2;
 
 import java.util.ArrayList;
 import Components.Activation;
@@ -36,7 +36,7 @@ public class Lane_1 {
 
 		PetriNet pn = new PetriNet();
 		pn.PetriNetName = "Lane_1";
-		pn.NetworkPort = 1081;
+		pn.NetworkPort = 2081;
 
 		// -------------Unitary Matrixes----------------
 
@@ -136,7 +136,7 @@ public class Lane_1 {
 
 		DataTransfer p_o = new DataTransfer();
 		p_o.SetName("p_o");
-		p_o.Value = new TransferOperation("localhost", "1080", "p_i1");
+		p_o.Value = new TransferOperation("localhost", "2080", "p_i1");
 		pn.PlaceList.add(p_o); // output channel to intersection
 
 		DataQplace p_m = new DataQplace();
@@ -325,7 +325,7 @@ public class Lane_1 {
 
 		// Start PN----------------------------------------------
 
-		System.out.println("Quantum Lane_1_Intersection_1 started \n ------------------------------");
+		System.out.println("Quantum Lane_1_Intersection_2 started \n ------------------------------");
 		pn.Delay = 1000;
 		pn.clearPrint = true;
 		PetriNetWindow frame = new PetriNetWindow(false);
