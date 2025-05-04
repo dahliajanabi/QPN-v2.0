@@ -40,6 +40,8 @@ public class Activation implements Serializable {
 	public ArrayList<String> ConstantValues;
 	public String OutputPlaceName;
 	public ArrayList<String> OutputPlaceNames;
+	public ArrayList<LaneActivationParameter> ActivationParameters;
+	public IntersectionActivationParameter IntersectionParameter;
 	public TransitionOperation Operation;
 	public Functions util;
 	public String ConstantValueName1;
@@ -137,6 +139,31 @@ public class Activation implements Serializable {
 		this.Operation = Condition;
 	}
 
+//	public Activation(PetriTransition Parent, ArrayList<String> InputPlaceNames, TransitionOperation Condition,
+//			ArrayList<ActivationParameter> OutputPlaceParameters) {
+//		util = new Functions();
+//		this.Parent = Parent;
+//		this.InputPlaceNames = InputPlaceNames;
+//		this.ActivationParameters = OutputPlaceParameters;
+//		this.Operation = Condition;
+//	}
+
+	public Activation(PetriTransition Parent, TransitionOperation Condition,
+			ArrayList<LaneActivationParameter> ActivationParameters) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.ActivationParameters = ActivationParameters;
+		this.Operation = Condition;
+	}
+
+	public Activation(PetriTransition Parent, TransitionOperation Condition,
+			IntersectionActivationParameter IntersectionParameter) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.IntersectionParameter = IntersectionParameter;
+		this.Operation = Condition;
+	}
+
 	public void Activate() throws CloneNotSupportedException {
 
 		if (Operation == TransitionOperation.UnitaryMatrix)
@@ -168,6 +195,261 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.Measurement)
 			Measurement();
+
+		if (Operation == TransitionOperation.LaneSplit)
+			LaneSplit();
+
+		if (Operation == TransitionOperation.IntersectionSplit)
+			IntersectionSplit();
+	}
+
+	private void IntersectionSplit() {
+		// first 4 qbits used with the unitary matrix, the 2nd 4 are moved to another
+		// place
+
+		PetriObject U1 = util.GetFromListByName(IntersectionParameter.QbitU1, Parent.TempMarking);
+		if (U1 == null && !(U1 instanceof DataQplace)) {
+			throw new Error("U1 is not DataQplace");
+		}
+		DataQplace U1_DataQplace = (DataQplace) U1;
+
+		PetriObject U2 = util.GetFromListByName(IntersectionParameter.QbitU2, Parent.TempMarking);
+		if (U2 == null && !(U2 instanceof DataQplace)) {
+			throw new Error("U2 is not DataQplace");
+		}
+		DataQplace U2_DataQplace = (DataQplace) U2;
+
+		PetriObject U3 = util.GetFromListByName(IntersectionParameter.QbitU3, Parent.TempMarking);
+		if (U3 == null && !(U3 instanceof DataQplace)) {
+			throw new Error("U3 is not DataQplace");
+		}
+		DataQplace U3_DataQplace = (DataQplace) U3;
+
+		PetriObject U4 = util.GetFromListByName(IntersectionParameter.QbitU4, Parent.TempMarking);
+		if (U4 == null && !(U4 instanceof DataQplace)) {
+			throw new Error("U4 is not DataQplace");
+		}
+		DataQplace U4_DataQplace = (DataQplace) U4;
+
+		PetriObject SList = util.GetFromListByName(IntersectionParameter.QbitSList, Parent.Parent.ConstantPlaceList);
+		if (SList == null && !(SList instanceof DataQplace)) {
+			throw new Error("S is not DataQplace");
+		}
+		DataQplace S_DataQplace = (DataQplace) SList;
+
+		PetriObject QbitLaneName1 = util.GetFromListByName(IntersectionParameter.QbitLaneName1,
+				Parent.Parent.PlaceList);
+		if (QbitLaneName1 == null && !(QbitLaneName1 instanceof DataQplace)) {
+			throw new Error("QbitLaneName1 is not DataQplace");
+		}
+		DataQplace QbitLaneName1_DataQplace = (DataQplace) QbitLaneName1;
+
+		PetriObject QbitLaneName2 = util.GetFromListByName(IntersectionParameter.QbitLaneName2,
+				Parent.Parent.PlaceList);
+		if (QbitLaneName2 == null && !(QbitLaneName2 instanceof DataQplace)) {
+			throw new Error("QbitLaneName2 is not DataQplace");
+		}
+		DataQplace QbitLaneName2_DataQplace = (DataQplace) QbitLaneName2;
+
+		ArrayList<DataTheta> DataThetaList = new ArrayList<>();
+		for (int i = 0; i < IntersectionParameter.ThetaConstantNames.size(); i++) {
+			PetriObject firstconstantoutput = util.GetFromListByName(IntersectionParameter.ThetaConstantNames.get(i),
+					Parent.Parent.ConstantPlaceList);
+			if (firstconstantoutput == null && !(firstconstantoutput instanceof DataTheta)) {
+				throw new Error("IntersectionParameter at position " + i + " is not DataTheta");
+			}
+			DataThetaList.add((DataTheta) firstconstantoutput);
+		}
+		
+		PetriObject QbitGammaName1 = util.GetFromListByName(IntersectionParameter.QbitGammaName1,
+				Parent.Parent.ConstantPlaceList);
+		if (QbitGammaName1 == null && !(QbitGammaName1 instanceof DataQplace)) {
+			throw new Error("QbitGammaName1 is not DataQplace");
+		}
+		DataQplace QbitGammaName1_DataQplace = (DataQplace) QbitGammaName1;
+		
+		PetriObject QbitGammaName2 = util.GetFromListByName(IntersectionParameter.QbitGammaName2,
+				Parent.Parent.ConstantPlaceList);
+		if (QbitGammaName2 == null && !(QbitGammaName2 instanceof DataQplace)) {
+			throw new Error("QbitGammaName2 is not DataQplace");
+		}
+		DataQplace QbitGammaName2_DataQplace = (DataQplace) QbitGammaName2;
+
+		// first output:
+		// beta = bu.bs
+		Float beta1 = U1_DataQplace.Value.V.QBits.get(0).Beta.Real * S_DataQplace.Value.V.QBits.get(0).Beta.Real;
+		double theta1 = Math.acos((double) beta1);
+		double alpha1 = Math.sin(theta1);
+
+		Float beta2 = U2_DataQplace.Value.V.QBits.get(0).Beta.Real * S_DataQplace.Value.V.QBits.get(1).Beta.Real;
+		double theta2 = Math.acos((double) beta2);
+		double alpha2 = Math.sin(theta2);
+
+		Float beta3 = U3_DataQplace.Value.V.QBits.get(0).Beta.Real * S_DataQplace.Value.V.QBits.get(2).Beta.Real;
+		double theta3 = Math.acos((double) beta3);
+		double alpha3 = Math.sin(theta3);
+
+		Float beta4 = U4_DataQplace.Value.V.QBits.get(0).Beta.Real * S_DataQplace.Value.V.QBits.get(3).Beta.Real;
+		double theta4 = Math.acos((double) beta4);
+		double alpha4 = Math.sin(theta4);
+
+		// second output:
+		// beta = bu(bs-1)
+		Float beta1M = U1_DataQplace.Value.V.QBits.get(0).Beta.Real * (S_DataQplace.Value.V.QBits.get(0).Beta.Real - 1);
+		double theta1M = Math.acos((double) beta1M);
+		double alpha1M = Math.sin(theta1M);
+
+		Float beta2M = U2_DataQplace.Value.V.QBits.get(0).Beta.Real * (S_DataQplace.Value.V.QBits.get(1).Beta.Real - 1);
+		double theta2M = Math.acos((double) beta2M);
+		double alpha2M = Math.sin(theta2M);
+
+		Float beta3M = U3_DataQplace.Value.V.QBits.get(0).Beta.Real * (S_DataQplace.Value.V.QBits.get(2).Beta.Real - 1);
+		double theta3M = Math.acos((double) beta3M);
+		double alpha3M = Math.sin(theta3M);
+
+		Float beta4M = U4_DataQplace.Value.V.QBits.get(0).Beta.Real * (S_DataQplace.Value.V.QBits.get(3).Beta.Real - 1);
+		double theta4M = Math.acos((double) beta4M);
+		double alpha4M = Math.sin(theta4M);
+
+		// theta = arcos (bu.bs)
+		// alpha = sin (theta 1st output)
+		QbitLaneName1_DataQplace.SetValue(new Qplace(
+				new Vvector(4, new QBit(new ComplexValue((float) alpha1, 0.0f), new ComplexValue(beta1, 0.0f)),
+						new QBit(new ComplexValue((float) alpha1M, 0.0f), new ComplexValue(beta1M, 0.0f)),
+						new QBit(new ComplexValue((float) alpha2, 0.0f), new ComplexValue(beta2, 0.0f)),
+						new QBit(new ComplexValue((float) alpha2M, 0.0f), new ComplexValue(beta2M, 0.0f))),
+				QplacePrintSetting.Both));
+
+		QbitLaneName2_DataQplace.SetValue(new Qplace(
+				new Vvector(4, new QBit(new ComplexValue((float) alpha3, 0.0f), new ComplexValue(beta3, 0.0f)),
+						new QBit(new ComplexValue((float) alpha3M, 0.0f), new ComplexValue(beta3M, 0.0f)),
+						new QBit(new ComplexValue((float) alpha4, 0.0f), new ComplexValue(beta4, 0.0f)),
+						new QBit(new ComplexValue((float) alpha4M, 0.0f), new ComplexValue(beta4M, 0.0f))),
+				QplacePrintSetting.Both));
+		
+		DataThetaList.get(0)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(0).Beta.Real
+				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+		
+		DataThetaList.get(1)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(1).Beta.Real
+				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+		
+		DataThetaList.get(2)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(2).Beta.Real
+				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+		
+		DataThetaList.get(3)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(3).Beta.Real
+				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+		
+		
+		DataThetaList.get(4)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(0).Beta.Real
+				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+		
+		DataThetaList.get(5)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(1).Beta.Real
+				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+		
+		DataThetaList.get(6)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(2).Beta.Real
+				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+		
+		DataThetaList.get(7)
+		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(3).Beta.Real
+				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+		
+	}
+
+	private void LaneSplit() {
+		// inputs:
+		// 1st: U
+		PetriObject U = util.GetFromListByName(ActivationParameters.get(0).QbitInput, Parent.TempMarking);
+		if (U == null && !(U instanceof DataQplace)) {
+			throw new Error("U is not DataQplace");
+		}
+		DataQplace U_DataQplace = (DataQplace) U;
+		// 2nd: S
+		PetriObject S = util.GetFromListByName(ActivationParameters.get(1).QbitInput, Parent.Parent.ConstantPlaceList);
+		if (S == null && !(S instanceof DataQplace)) {
+			throw new Error("S is not DataQplace");
+		}
+		DataQplace S_DataQplace = (DataQplace) S;
+
+		PetriObject firstoutput = util.GetFromListByName(ActivationParameters.get(0).QbitLaneName,
+				Parent.Parent.PlaceList);
+		if (firstoutput == null && !(firstoutput instanceof DataQplace)) {
+			throw new Error("firstoutput is not DataQplace");
+		}
+		DataQplace firstoutput_DataQplace = (DataQplace) firstoutput;
+
+		PetriObject secondoutput = util.GetFromListByName(ActivationParameters.get(1).QbitLaneName,
+				Parent.Parent.PlaceList);
+		if (secondoutput == null && !(secondoutput instanceof DataQplace)) {
+			throw new Error("secondoutput is not DataQplace");
+		}
+		DataQplace secondoutput_DataQplace = (DataQplace) secondoutput;
+
+		PetriObject firstconstantoutput = util.GetFromListByName(ActivationParameters.get(0).ThetaConstantName,
+				Parent.Parent.ConstantPlaceList);
+		if (firstconstantoutput == null && !(firstconstantoutput instanceof DataTheta)) {
+			throw new Error("firstconstantoutput is not DataTheta");
+		}
+		DataTheta firstconstantoutput_DataTheta = (DataTheta) firstconstantoutput;
+
+		PetriObject secondconstantoutput = util.GetFromListByName(ActivationParameters.get(1).ThetaConstantName,
+				Parent.Parent.ConstantPlaceList);
+		if (secondconstantoutput == null && !(secondconstantoutput instanceof DataTheta)) {
+			throw new Error("secondconstantoutput is not DataTheta");
+		}
+		DataTheta secondconstantoutput_DataTheta = (DataTheta) secondconstantoutput;
+
+		PetriObject firstoutputGamma = util.GetFromListByName(ActivationParameters.get(0).QbitGammaName,
+				Parent.Parent.ConstantPlaceList);
+		if (firstoutputGamma == null && !(firstoutputGamma instanceof DataQplace)) {
+			throw new Error("firstoutputGamma is not DataQplace");
+		}
+		DataQplace firstoutputGamma_DataQplace = (DataQplace) firstoutputGamma;
+
+		PetriObject secondoutputGamma = util.GetFromListByName(ActivationParameters.get(1).QbitGammaName,
+				Parent.Parent.ConstantPlaceList);
+		if (secondoutputGamma == null && !(secondoutputGamma instanceof DataQplace)) {
+			throw new Error("secondoutputGamma is not DataQplace");
+		}
+		DataQplace secondoutputGamma_DataQplace = (DataQplace) secondoutputGamma;
+
+		// first output:
+		// beta = bu.bs
+		Float beta = U_DataQplace.Value.V.QBits.get(0).Beta.Real * S_DataQplace.Value.V.QBits.get(0).Beta.Real;
+		double theta = Math.acos((double) beta);
+		double alpha = Math.sin(theta);
+
+		// theta = arcos (bu.bs)
+		// alpha = sin (theta 1st output)
+		firstoutput_DataQplace.SetValue(new Qplace(
+				new Vvector(1, new QBit(new ComplexValue((float) alpha, 0.0f), new ComplexValue(beta, 0.0f))),
+				QplacePrintSetting.Both));
+
+		// second output:
+		// beta = bu(bs-1)
+		Float beta2 = U_DataQplace.Value.V.QBits.get(0).Beta.Real * (S_DataQplace.Value.V.QBits.get(0).Beta.Real - 1);
+		double theta2 = Math.acos((double) beta2);
+		double alpha2 = Math.sin(theta2);
+
+		// theta 2 = arcos(bu.(bs-1))
+		// alpha = sin (theta 2nd output)
+		secondoutput_DataQplace.SetValue(new Qplace(
+				new Vvector(1, new QBit(new ComplexValue((float) alpha2, 0.0f), new ComplexValue(beta2, 0.0f))),
+				QplacePrintSetting.Both));
+
+		firstconstantoutput_DataTheta
+				.SetValue(new Theta((float) Math.acos(1 * firstoutput_DataQplace.Value.V.QBits.get(0).Beta.Real
+						* firstoutputGamma_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+
+		secondconstantoutput_DataTheta
+				.SetValue(new Theta((float) Math.acos(1 * secondoutput_DataQplace.Value.V.QBits.get(0).Beta.Real
+						* secondoutputGamma_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
 	}
 
 	private void UnitaryMatrixV() throws CloneNotSupportedException {
@@ -517,8 +799,7 @@ public class Activation implements Serializable {
 		q.Alpha = util.Power2(q.Alpha);
 		q.Beta = util.Power2(q.Beta);
 
-		q.Alpha = util
-				.sqrt(new ComplexValue(q.Alpha.Real + q.Beta.Real, q.Alpha.Imaginary + q.Beta.Imaginary));
+		q.Alpha = util.sqrt(new ComplexValue(q.Alpha.Real + q.Beta.Real, q.Alpha.Imaginary + q.Beta.Imaginary));
 		result.SetValue(new Qplace(new Vvector(1, q), QplacePrintSetting.Both));
 		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
 	}

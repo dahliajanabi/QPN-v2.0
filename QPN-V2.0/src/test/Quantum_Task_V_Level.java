@@ -33,7 +33,7 @@ public class Quantum_Task_V_Level {
 	public static void main(String[] args) {
 
 		PetriNet pn = new PetriNet();
-		pn.PetriNetName = "One Axis Random Walker";
+		pn.PetriNetName = "Quantum Task";
 		pn.NetworkPort = 1080;
 
 		// -------------Unitary Matrixes----------------
@@ -82,7 +82,7 @@ public class Quantum_Task_V_Level {
 		p0.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
 				QplacePrintSetting.Both));
 
-		pn.PlaceList.add(p0); // Stable Place 2 qubits
+		pn.PlaceList.add(p0); 
 
 		DataQplace p1 = new DataQplace();
 		p1.SetName("p1");
