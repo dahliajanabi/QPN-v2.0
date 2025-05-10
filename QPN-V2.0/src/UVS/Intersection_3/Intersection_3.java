@@ -513,7 +513,7 @@ public class Intersection_3 {
 		t4split.TransitionName = "t4split";
 		t4split.InputPlaceName.add("p_o");
 
-		Condition T4sCt1 = new Condition(t4, "p_o", TransitionCondition.NotNull);
+		Condition T4sCt1 = new Condition(t4split, "p_o", TransitionCondition.NotNull);
 
 		GuardMapping grdT4s = new GuardMapping();
 		grdT4s.condition = T4sCt1;

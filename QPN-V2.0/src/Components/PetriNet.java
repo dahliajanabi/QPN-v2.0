@@ -180,7 +180,7 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 					try {
 						NonReversibleExecutionList.get(i).Activate();
 						PrintThis(NonReversibleExecutionList.get(i).GetName() + " executed:", null);
-					} catch (CloneNotSupportedException e) {
+					} catch (CloneNotSupportedException | IOException e) {
 						PrintThis(e.getMessage(), e);
 					}
 				}
@@ -191,7 +191,7 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 					try {
 						ReversibleExecutionList.get(i).Activate();
 						PrintThis(ReversibleExecutionList.get(i).GetName() + " executed:", null);
-					} catch (CloneNotSupportedException e) {
+					} catch (CloneNotSupportedException | IOException e) {
 						PrintThis(e.getMessage(), e);
 					}
 				}

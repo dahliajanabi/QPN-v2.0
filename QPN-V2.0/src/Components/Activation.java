@@ -1,8 +1,14 @@
 package Components;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import com.google.gson.Gson;
+
 import DataObjects.DataUnitaryMatrix;
 import DataObjects.DataUnitaryThetaMatrix;
 import DataObjects.DataQplace;
@@ -21,6 +27,7 @@ import Enumerations.UnitaryThetaMatrixValueFuncType;
 import Interfaces.PetriObject;
 import Utilities.Functions;
 import java.lang.Math;
+import java.nio.file.Files;
 
 public class Activation implements Serializable {
 
@@ -47,6 +54,7 @@ public class Activation implements Serializable {
 	public String ConstantValueName1;
 	public String ConstantValueName2;
 	public int QbitIndex = 0;
+	public int SplitRange = 1;
 
 	public Activation(PetriTransition Parent) {
 		util = new Functions();
@@ -111,6 +119,17 @@ public class Activation implements Serializable {
 		this.QbitIndex = qbitIndex;
 	}
 
+	public Activation(PetriTransition Parent, String InputPlaceName, int qbitIndex, int splitRange,
+			TransitionOperation Condition, String OutputPlaceName) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.InputPlaceName = InputPlaceName;
+		this.OutputPlaceName = OutputPlaceName;
+		this.Operation = Condition;
+		this.QbitIndex = qbitIndex;
+		this.SplitRange = splitRange;
+	}
+
 	public Activation(PetriTransition Parent, ArrayList<String> InputPlaceNames, TransitionOperation Condition,
 			String OutputPlaceName) {
 		util = new Functions();
@@ -164,7 +183,7 @@ public class Activation implements Serializable {
 		this.Operation = Condition;
 	}
 
-	public void Activate() throws CloneNotSupportedException {
+	public void Activate() throws CloneNotSupportedException, IOException {
 
 		if (Operation == TransitionOperation.UnitaryMatrix)
 			UnitaryMatrix();
@@ -193,6 +212,9 @@ public class Activation implements Serializable {
 		if (Operation == TransitionOperation.SplitQbit)
 			SplitQbit();
 
+		if (Operation == TransitionOperation.SplitRangeQbit)
+			SplitRangeQbit();
+
 		if (Operation == TransitionOperation.Measurement)
 			Measurement();
 
@@ -201,6 +223,93 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.IntersectionSplit)
 			IntersectionSplit();
+
+		if (Operation == TransitionOperation.WriteToFile)
+			WriteToFile();
+		if (Operation == TransitionOperation.LaneSplitWithoutOutputThetas)
+			LaneSplitWithoutOutputThetas();
+
+	}
+
+	private void LaneSplitWithoutOutputThetas() {
+		// inputs:
+		// 1st: U
+		PetriObject U = util.GetFromListByName(ActivationParameters.get(0).QbitInput, Parent.TempMarking);
+		if (U == null && !(U instanceof DataQplace)) {
+			throw new Error("U is not DataQplace");
+		}
+		DataQplace U_DataQplace = (DataQplace) U;
+		// 2nd: S
+		PetriObject S = util.GetFromListByName(ActivationParameters.get(1).QbitInput, Parent.Parent.ConstantPlaceList);
+		if (S == null && !(S instanceof DataQplace)) {
+			throw new Error("S is not DataQplace");
+		}
+		DataQplace S_DataQplace = (DataQplace) S;
+
+		PetriObject firstoutput = util.GetFromListByName(ActivationParameters.get(0).QbitLaneName,
+				Parent.Parent.PlaceList);
+		if (firstoutput == null && !(firstoutput instanceof DataQplace)) {
+			throw new Error("firstoutput is not DataQplace");
+		}
+		DataQplace firstoutput_DataQplace = (DataQplace) firstoutput;
+
+		PetriObject secondoutput = util.GetFromListByName(ActivationParameters.get(1).QbitLaneName,
+				Parent.Parent.PlaceList);
+		if (secondoutput == null && !(secondoutput instanceof DataQplace)) {
+			throw new Error("secondoutput is not DataQplace");
+		}
+		DataQplace secondoutput_DataQplace = (DataQplace) secondoutput;
+
+		ArrayList<QBit> qlist = new ArrayList<QBit>();
+		for (int i = 0; i < U_DataQplace.Value.V.Size; i++) {
+			// first output:
+			// beta = bu.bs
+			Float beta = U_DataQplace.Value.V.QBits.get(i).Beta.Real * S_DataQplace.Value.V.QBits.get(i).Beta.Real;
+			double theta = Math.acos((double) beta);
+			double alpha = Math.sin(theta);
+			qlist.add(new QBit(new ComplexValue((float) alpha, 0.0f), new ComplexValue(beta, 0.0f)));
+		}
+
+		// theta = arcos (bu.bs)
+		// alpha = sin (theta 1st output)
+		firstoutput_DataQplace.SetValue(new Qplace(new Vvector(qlist.size(), qlist), QplacePrintSetting.Both));
+
+		
+		ArrayList<QBit> qlist2 = new ArrayList<QBit>();
+		
+		for (int i = 0; i < U_DataQplace.Value.V.Size; i++) {
+			
+		// second output:
+		// beta = bu(bs-1)
+		Float beta2 = U_DataQplace.Value.V.QBits.get(i).Beta.Real * (S_DataQplace.Value.V.QBits.get(i).Beta.Real - 1);
+		double theta2 = Math.acos((double) beta2);
+		double alpha2 = Math.sin(theta2);
+		qlist2.add(new QBit(new ComplexValue((float) alpha2, 0.0f), new ComplexValue(beta2, 0.0f)));
+		
+		}
+		// theta 2 = arcos(bu.(bs-1))
+		// alpha = sin (theta 2nd output)
+		secondoutput_DataQplace.SetValue(new Qplace(new Vvector(qlist2.size(), qlist2), QplacePrintSetting.Both));
+	}
+
+	private void WriteToFile() throws IOException {
+		File file = new File(OutputPlaceName);
+		Files.deleteIfExists(file.toPath());
+		FileWriter fw = new FileWriter(file.getPath());
+		ArrayList<DataQplace> toSerialize = new ArrayList<DataQplace>();
+		for (int i = 0; i < InputPlaceNames.size(); i++) {
+			PetriObject input = util.GetFromListByName(InputPlaceNames.get(i), Parent.TempMarking);
+			if (input == null && !(input instanceof DataQplace)) {
+				continue;
+			}
+			toSerialize.add(((DataQplace) input));
+			// fw.write(((DataQplace) input).Value.toString());
+		}
+
+		Gson gson = new Gson();
+		String json = gson.toJson(toSerialize);
+		fw.write(json);
+		fw.close();
 	}
 
 	private void IntersectionSplit() {
@@ -260,14 +369,14 @@ public class Activation implements Serializable {
 			}
 			DataThetaList.add((DataTheta) firstconstantoutput);
 		}
-		
+
 		PetriObject QbitGammaName1 = util.GetFromListByName(IntersectionParameter.QbitGammaName1,
 				Parent.Parent.ConstantPlaceList);
 		if (QbitGammaName1 == null && !(QbitGammaName1 instanceof DataQplace)) {
 			throw new Error("QbitGammaName1 is not DataQplace");
 		}
 		DataQplace QbitGammaName1_DataQplace = (DataQplace) QbitGammaName1;
-		
+
 		PetriObject QbitGammaName2 = util.GetFromListByName(IntersectionParameter.QbitGammaName2,
 				Parent.Parent.ConstantPlaceList);
 		if (QbitGammaName2 == null && !(QbitGammaName2 instanceof DataQplace)) {
@@ -326,40 +435,39 @@ public class Activation implements Serializable {
 						new QBit(new ComplexValue((float) alpha4, 0.0f), new ComplexValue(beta4, 0.0f)),
 						new QBit(new ComplexValue((float) alpha4M, 0.0f), new ComplexValue(beta4M, 0.0f))),
 				QplacePrintSetting.Both));
-		
+
 		DataThetaList.get(0)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(0).Beta.Real
-				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(0).Beta.Real
+						* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+
 		DataThetaList.get(1)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(1).Beta.Real
-				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(1).Beta.Real
+						* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+
 		DataThetaList.get(2)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(2).Beta.Real
-				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(2).Beta.Real
+						* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+
 		DataThetaList.get(3)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(3).Beta.Real
-				* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
-		
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(3).Beta.Real
+						* QbitGammaName1_DataQplace.Value.V.QBits.get(0).Beta.Real)));
+
 		DataThetaList.get(4)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(0).Beta.Real
-				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName1_DataQplace.Value.V.QBits.get(0).Beta.Real
+						* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+
 		DataThetaList.get(5)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(1).Beta.Real
-				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(1).Beta.Real
+						* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+
 		DataThetaList.get(6)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(2).Beta.Real
-				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(2).Beta.Real
+						* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+
 		DataThetaList.get(7)
-		.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(3).Beta.Real
-				* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
-		
+				.SetValue(new Theta((float) Math.acos(1 * QbitLaneName2_DataQplace.Value.V.QBits.get(3).Beta.Real
+						* QbitGammaName2_DataQplace.Value.V.QBits.get(0).Alpha.Real)));
+
 	}
 
 	private void LaneSplit() {
@@ -465,7 +573,10 @@ public class Activation implements Serializable {
 		// result qplace that collect all the qbits after the operation
 		DataQplace result = new DataQplace();
 		ArrayList<QBit> QBitResultCollection = new ArrayList<>();
-
+if(Parent.TransitionName=="tmu")
+{
+	System.out.println("--------------STOP-------------tmu");
+}
 		// perform operation with matrixes (product)
 		for (int x = 0; x < QBitCollection.size(); x++) {
 
@@ -500,6 +611,14 @@ public class Activation implements Serializable {
 			QBitResultCollection.add(new QBit(sm.get(0), sm.get(1)));
 		}
 
+		System.out.println("-------------------" + OutputPlaceName);
+		if (OutputPlaceName == "p6") {
+			System.out.println("--------STOP-----------" + OutputPlaceName);
+		}
+
+		if (OutputPlaceName == "p5") {
+			System.out.println("--------STOP-----------" + OutputPlaceName);
+		}
 		result.SetName(OutputPlaceName);
 		result.SetValue(
 				new Qplace(new Vvector(QBitResultCollection.size(), QBitResultCollection), QplacePrintSetting.Both));
@@ -525,7 +644,7 @@ public class Activation implements Serializable {
 
 			PetriObject constantValue = util.GetFromListByName(ConstantValues.get(x), Parent.Parent.ConstantPlaceList);
 			if (constantValue == null && !(constantValue instanceof DataUnitaryThetaMatrix)) {
-				throw new Error("Did not find the corresponding unitery matrix");
+				throw new Error("Did not find the corresponding unitary matrix");
 			}
 
 			DataUnitaryThetaMatrix A = (DataUnitaryThetaMatrix) constantValue;
@@ -784,6 +903,23 @@ public class Activation implements Serializable {
 		result.SetName(OutputPlaceName);
 		QBit q = ((DataQplace) input1).Value.V.QBits.get(QbitIndex);
 		result.SetValue(new Qplace(new Vvector(1, q), QplacePrintSetting.Both));
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
+	}
+
+	private void SplitRangeQbit() throws CloneNotSupportedException {
+		PetriObject input1 = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+		result.SetName(OutputPlaceName);
+		int limit = QbitIndex + SplitRange;
+		ArrayList<QBit> range = new ArrayList<QBit>();
+		for (int i = QbitIndex; i < limit; i++) {
+			QBit q = ((DataQplace) input1).Value.V.QBits.get(i);
+			range.add(q);
+		}
+		result.SetValue(new Qplace(new Vvector(SplitRange, range), QplacePrintSetting.Both));
 		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
 	}
 

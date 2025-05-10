@@ -13,7 +13,10 @@ public enum TransitionOperation implements Serializable{
 	UnitaryMatrixV,
 	ThetaUnitaryMatrixV,
 	SplitQbit,
+	SplitRangeQbit,
 	Measurement,
 	LaneSplit,
-	IntersectionSplit
+	LaneSplitWithoutOutputThetas,
+	IntersectionSplit,
+	WriteToFile
 }

@@ -1,5 +1,6 @@
 package Components;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import DataObjects.DataPsivector;
@@ -82,7 +83,7 @@ public class PetriTransition implements PetriObject, Serializable {
 	public ArrayList<GuardMapping> GuardMappingList;
 	private GuardMapping CurrentGuard;
 
-	public void Activate() throws CloneNotSupportedException {
+	public void Activate() throws CloneNotSupportedException, IOException {
 		CurrentGuard.Activate();
 		TempMarking.clear();
 	}
@@ -119,7 +120,7 @@ public class PetriTransition implements PetriObject, Serializable {
 				Parent.PlaceList.set(util.GetIndexByName(string, Parent.PlaceList), currentInputPlace);
 			}
 
-			if (currentInputPlace instanceof DataQplace) {
+			if (currentInputPlace instanceof DataQplace) {	
 				DataQplace currentDataComplexVector = (DataQplace) ((DataQplace) currentInputPlace).clone();
 				result = new DataQplace();
 				result.SetName(currentDataComplexVector.GetName());

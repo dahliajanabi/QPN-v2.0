@@ -1,5 +1,6 @@
 package Components;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public class GuardMapping  implements Serializable{
 	public GuardMapping() {
 		Activations= new ArrayList<Activation>();
 	}
-	public void Activate() throws CloneNotSupportedException
+	public void Activate() throws CloneNotSupportedException, IOException
 	{
 		for (Activation activation : Activations) {
 			activation.Activate();
