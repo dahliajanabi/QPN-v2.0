@@ -40,7 +40,7 @@ public class Activation implements Serializable {
 	float Ro = (float) (1 / Math.sqrt(2));
 
 	public String InputPlaceName;
-
+	public ArrayList<UnitaryMatrixParameter> UnitaryMatrixParameters;
 	public String InputPlaceName1;
 	public String InputPlaceName2;
 	public ArrayList<String> InputPlaceNames;
@@ -48,6 +48,7 @@ public class Activation implements Serializable {
 	public String OutputPlaceName;
 	public ArrayList<String> OutputPlaceNames;
 	public ArrayList<LaneActivationParameter> ActivationParameters;
+	public ArrayList<Integer> Indexes;
 	public IntersectionActivationParameter IntersectionParameter;
 	public TransitionOperation Operation;
 	public Functions util;
@@ -75,6 +76,13 @@ public class Activation implements Serializable {
 		this.OutputPlaceName = OutputPlaceName;
 		this.Operation = Condition;
 		this.ConstantValueName1 = ConstantValueName;
+	}
+
+	public Activation(PetriTransition Parent, String InputPlaceName, TransitionOperation Condition) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.InputPlaceName = InputPlaceName;
+		this.Operation = Condition;
 	}
 
 	public Activation(PetriTransition Parent, String InputPlaceName1, String InputPlaceName2, String ConstantValueName,
@@ -149,6 +157,15 @@ public class Activation implements Serializable {
 		this.Operation = Condition;
 	}
 
+	public Activation(CustomUnitaryMatrixParameter CustomUnitaryMatrixParameter) {
+		util = new Functions();
+		this.Parent = CustomUnitaryMatrixParameter.Parent;
+		this.ConstantValues = CustomUnitaryMatrixParameter.ConstantValues;
+		this.OutputPlaceName = CustomUnitaryMatrixParameter.OutputPlaceName;
+		this.Operation = CustomUnitaryMatrixParameter.Condition;
+		this.UnitaryMatrixParameters = CustomUnitaryMatrixParameter.UnitaryMatrixParameters;
+	}
+
 	public Activation(PetriTransition Parent, String InputPlaceName, TransitionOperation Condition,
 			ArrayList<String> OutputPlaceNames) {
 		util = new Functions();
@@ -183,6 +200,16 @@ public class Activation implements Serializable {
 		this.Operation = Condition;
 	}
 
+	public Activation(PetriTransition Parent, String InputPlaceName, ArrayList<Integer> Indexes,
+			TransitionOperation Condition, String OutputPlaceName) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.InputPlaceName = InputPlaceName;
+		this.OutputPlaceName = OutputPlaceName;
+		this.Operation = Condition;
+		this.Indexes = Indexes;
+	}
+
 	public void Activate() throws CloneNotSupportedException, IOException {
 
 		if (Operation == TransitionOperation.UnitaryMatrix)
@@ -206,6 +233,9 @@ public class Activation implements Serializable {
 		if (Operation == TransitionOperation.UnitaryMatrixV)
 			UnitaryMatrixV();
 
+		if (Operation == TransitionOperation.CustomUnitaryMatrixV)
+			CustomUnitaryMatrixV();
+
 		if (Operation == TransitionOperation.ThetaUnitaryMatrixV)
 			ThetaUnitaryMatrixV();
 
@@ -214,6 +244,9 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.SplitRangeQbit)
 			SplitRangeQbit();
+
+		if (Operation == TransitionOperation.SplitIndexesQbit)
+			SplitIndexesQbit();
 
 		if (Operation == TransitionOperation.Measurement)
 			Measurement();
@@ -226,9 +259,48 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.WriteToFile)
 			WriteToFile();
+
 		if (Operation == TransitionOperation.LaneSplitWithoutOutputThetas)
 			LaneSplitWithoutOutputThetas();
 
+		if (Operation == TransitionOperation.Throughput)
+			Throughput();
+	}
+
+	private void Throughput() throws CloneNotSupportedException {
+		// input place, indexes, output place
+		// Indexes.size = QPlace size
+		PetriObject input1 = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+
+		for (int i = 0; i < result.Value.V.Size; i++) {
+			Parent.Parent.Throughput += result.Value.V.QBits.get(i).Alpha.Real;
+		}
+		System.out.println("Throughput = "+ Parent.Parent.Throughput);
+		Parent.Parent.StopFlag = true;
+	}
+
+	private void SplitIndexesQbit() throws CloneNotSupportedException {
+		// input place, indexes, output place
+		// Indexes.size = QPlace size
+		PetriObject input1 = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+		result.SetName(OutputPlaceName);
+
+		int limit = Indexes.size();
+		ArrayList<QBit> range = new ArrayList<QBit>();
+		for (int i = QbitIndex; i < limit; i++) {
+			QBit q = ((DataQplace) input1).Value.V.QBits.get(Indexes.get(i));
+			range.add(q);
+		}
+		result.SetValue(new Qplace(new Vvector(limit, range), QplacePrintSetting.Both));
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
 	}
 
 	private void LaneSplitWithoutOutputThetas() {
@@ -274,18 +346,18 @@ public class Activation implements Serializable {
 		// alpha = sin (theta 1st output)
 		firstoutput_DataQplace.SetValue(new Qplace(new Vvector(qlist.size(), qlist), QplacePrintSetting.Both));
 
-		
 		ArrayList<QBit> qlist2 = new ArrayList<QBit>();
-		
+
 		for (int i = 0; i < U_DataQplace.Value.V.Size; i++) {
-			
-		// second output:
-		// beta = bu(bs-1)
-		Float beta2 = U_DataQplace.Value.V.QBits.get(i).Beta.Real * (S_DataQplace.Value.V.QBits.get(i).Beta.Real - 1);
-		double theta2 = Math.acos((double) beta2);
-		double alpha2 = Math.sin(theta2);
-		qlist2.add(new QBit(new ComplexValue((float) alpha2, 0.0f), new ComplexValue(beta2, 0.0f)));
-		
+
+			// second output:
+			// beta = bu(bs-1)
+			Float beta2 = U_DataQplace.Value.V.QBits.get(i).Beta.Real
+					* (S_DataQplace.Value.V.QBits.get(i).Beta.Real - 1);
+			double theta2 = Math.acos((double) beta2);
+			double alpha2 = Math.sin(theta2);
+			qlist2.add(new QBit(new ComplexValue((float) alpha2, 0.0f), new ComplexValue(beta2, 0.0f)));
+
 		}
 		// theta 2 = arcos(bu.(bs-1))
 		// alpha = sin (theta 2nd output)
@@ -573,10 +645,9 @@ public class Activation implements Serializable {
 		// result qplace that collect all the qbits after the operation
 		DataQplace result = new DataQplace();
 		ArrayList<QBit> QBitResultCollection = new ArrayList<>();
-if(Parent.TransitionName=="tmu")
-{
-	System.out.println("--------------STOP-------------tmu");
-}
+//		if (Parent.TransitionName == "tmu") {
+//			System.out.println("--------------STOP-------------tmu");
+//		}
 		// perform operation with matrixes (product)
 		for (int x = 0; x < QBitCollection.size(); x++) {
 
@@ -611,14 +682,79 @@ if(Parent.TransitionName=="tmu")
 			QBitResultCollection.add(new QBit(sm.get(0), sm.get(1)));
 		}
 
-		System.out.println("-------------------" + OutputPlaceName);
-		if (OutputPlaceName == "p6") {
-			System.out.println("--------STOP-----------" + OutputPlaceName);
+//		System.out.println("-------------------" + OutputPlaceName);
+//		if (OutputPlaceName == "p6") {
+//			System.out.println("--------STOP-----------" + OutputPlaceName);
+//		}
+//
+//		if (OutputPlaceName == "p5") {
+//			System.out.println("--------STOP-----------" + OutputPlaceName);
+//		}
+		result.SetName(OutputPlaceName);
+		result.SetValue(
+				new Qplace(new Vvector(QBitResultCollection.size(), QBitResultCollection), QplacePrintSetting.Both));
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
+	}
+
+	private void CustomUnitaryMatrixV() throws CloneNotSupportedException {
+		// extract qbits in an ordered list
+		ArrayList<QBit> QBitCollection = new ArrayList<>();
+		for (int i = 0; i < UnitaryMatrixParameters.size(); i++) {
+			PetriObject input = util.GetFromListByName(UnitaryMatrixParameters.get(i).PlaceName, Parent.TempMarking);
+			if (input == null && !(input instanceof DataQplace)) {
+				continue;
+			}
+			QBitCollection.add(((DataQplace) input).Value.V.QBits.get(UnitaryMatrixParameters.get(i).Index));
 		}
 
-		if (OutputPlaceName == "p5") {
-			System.out.println("--------STOP-----------" + OutputPlaceName);
+		// result qplace that collect all the qbits after the operation
+		DataQplace result = new DataQplace();
+		ArrayList<QBit> QBitResultCollection = new ArrayList<>();
+//		if (Parent.TransitionName == "tmu") {
+//			System.out.println("--------------STOP-------------tmu");
+//		}
+		// perform operation with matrixes (product)
+		for (int x = 0; x < QBitCollection.size(); x++) {
+
+			PetriObject constantValue = util.GetFromListByName(ConstantValues.get(x), Parent.Parent.ConstantPlaceList);
+			if (constantValue == null && !(constantValue instanceof DataUnitaryMatrix)) {
+				throw new Error("Did not find the corresponding unitery matrix");
+			}
+
+			DataUnitaryMatrix A = (DataUnitaryMatrix) constantValue;
+
+			// Qplace resD = new Qplace(new Vvector(1, ), resC.PrintingSetting);
+
+			ArrayList<ComplexValue> sm = new ArrayList<ComplexValue>();
+			for (int i = 0; i < A.Value.Matrix.length; i++) {
+				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
+				ComplexValue cv1 = QBitCollection.get(x).Alpha;
+				Float real = A.Value.Matrix[i][0] * cv1.Real;
+				Float imaginary = A.Value.Matrix[i][0] * cv1.Imaginary;
+				ComplexValue cv2 = new ComplexValue(real, imaginary);
+				sum.Real += cv2.Real;
+				sum.Imaginary += cv2.Imaginary;
+				// -----------------------------------------------------------
+				ComplexValue cv3 = QBitCollection.get(x).Beta;
+				real = A.Value.Matrix[i][0] * cv3.Real;
+				imaginary = A.Value.Matrix[i][0] * cv3.Imaginary;
+				ComplexValue cv4 = new ComplexValue(real, imaginary);
+				sum.Real += cv4.Real;
+				sum.Imaginary += cv4.Imaginary;
+				sm.add(sum);
+				// resD.Psi.ComplexArray.set(i, sum);
+			}
+			QBitResultCollection.add(new QBit(sm.get(0), sm.get(1)));
 		}
+
+//		System.out.println("-------------------" + OutputPlaceName);
+//		if (OutputPlaceName == "p6") {
+//			System.out.println("--------STOP-----------" + OutputPlaceName);
+//		}
+//
+//		if (OutputPlaceName == "p5") {
+//			System.out.println("--------STOP-----------" + OutputPlaceName);
+//		}
 		result.SetName(OutputPlaceName);
 		result.SetValue(
 				new Qplace(new Vvector(QBitResultCollection.size(), QBitResultCollection), QplacePrintSetting.Both));

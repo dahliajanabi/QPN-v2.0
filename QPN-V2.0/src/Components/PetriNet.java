@@ -92,7 +92,7 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 	public ArrayList<PetriTransition> Transitions;
 
 	public String PetriNetName;
-
+	public double Throughput  = 0.0;
 	public boolean StopFlag;
 	public boolean PauseFlag;
 	public Integer Delay = 1000;
