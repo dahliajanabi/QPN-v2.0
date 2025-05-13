@@ -1096,7 +1096,7 @@ public class UVS {
 		uvs.pn.Delay = 0;
 		uvs.BildQPN().Start();
 	
-//		uvs.BildQPN().clearPrint = true;
+//		uvs.BildQPN().clearPrint = false;
 //		PetriNetWindow frame = new PetriNetWindow(false);
 //		frame.petriNet = uvs.BildQPN();
 //		frame.setVisible(true);
@@ -1165,7 +1165,7 @@ public class UVS {
 		uvs2.pn.Delay = 0;
 		uvs2.BildQPN().Start();
 		
-//		uvs2.BildQPN().clearPrint = true;
+//		uvs2.BildQPN().clearPrint = false;
 //		PetriNetWindow frame2 = new PetriNetWindow(false);
 //		frame2.petriNet = uvs2.BildQPN();
 //		frame2.setVisible(true);
