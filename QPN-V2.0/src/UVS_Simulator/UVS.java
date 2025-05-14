@@ -1236,4 +1236,20 @@ public class UVS {
 
 	}
 
+
+
+	public static double simulateAndGetFitness(double[] gamma){
+		Gammas[] gammas = new Gammas[4];
+		for (int i = 0; i < 4; i++)
+			gammas[i] = new Gamma(gamma[i], Math.sqrt(1-gamma[i]*gamma[i]));
+
+		double[] u_in = {0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3}; // or some similar values
+
+		UVS uvs = new UVS(); // TODO
+		uvs.setGamma(gammas);
+		uvs.setU(u_in); // TODO
+
+		uvs.runTheSimulation(); // TODO
+		return uvs.getThrouput();
+	}
 }
