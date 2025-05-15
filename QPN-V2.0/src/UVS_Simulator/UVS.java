@@ -2,7 +2,6 @@ package UVS_Simulator;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import Components.Activation;
 import Components.LaneActivationParameter;
 import Components.Condition;
@@ -49,18 +48,58 @@ public class UVS {
 		this.p1 = p1;
 		this.piplus = piplus;
 	}
+	
+	public UVS(Gammas[] gammas, double[] uin, double[] ux) {
+		this.setGamma(gammas);
+		this.setUin(uin);
+		this.setUx(ux);
+	}
 
 	public void setGamma(Gammas[] gammas) {
 		this.gammas = gammas;
 		this.pc = new DataQplace();
-		pc.SetName("p_c");
-		pc.SetValue(new Qplace(
+		this.pc.SetName("p_c");
+		this.pc.SetValue(new Qplace(
 				new Vvector(4,
 						new QBit(new ComplexValue(this.gammas[0].a, 0.0f), new ComplexValue(this.gammas[0].b, 0.0f)),
 						new QBit(new ComplexValue(this.gammas[1].a, 0.0f), new ComplexValue(this.gammas[1].b, 0.0f)),
 						new QBit(new ComplexValue(this.gammas[2].a, 0.0f), new ComplexValue(this.gammas[2].b, 0.0f)),
 						new QBit(new ComplexValue(this.gammas[3].a, 0.0f), new ComplexValue(this.gammas[3].b, 0.0f))),
 				QplacePrintSetting.Both));
+	}
+	
+	public void setUin(double[] uin) {
+		this.piplus = new DataQplace(); // External input
+		this.piplus.SetName("p_i_plus");
+		this.piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue((float)uin[0], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[1], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[2], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[3], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[4], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[5], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[6], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[7], 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+	}
+	
+	public void setUx(double[] ux) {
+		this.p1 = new DataQplace(); // X
+		this.p1.SetName("p1");
+		this.p1.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue((float)ux[0], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[1], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[2], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[3], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[4], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[5], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[6], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[7], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[8], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[9], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[10], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[11], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[12], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[13], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[14], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[15], 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
 	}
 	
 	public double getThrouput () {
@@ -1052,204 +1091,226 @@ public class UVS {
 	}
 
 	public static void main(String[] args) throws CloneNotSupportedException {
+//		Gammas[] gammas = new Gammas[4];
+//		gammas[0] = new Gammas((double) Ro, 0.0);
+//		gammas[1] = new Gammas((double) Ro, 0.0);
+//		gammas[2] = new Gammas((double) Ro, 0.0);
+//		gammas[3] = new Gammas((double) Ro, 0.0);
+//
+//		DataQplace p1 = new DataQplace(); // X
+//		p1.SetName("p1");
+//		p1.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+//
+//		DataQplace piplus = new DataQplace(); // External input
+//		piplus.SetName("p_i_plus");
+//		piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+//
+//		UVS uvs = new UVS(gammas, p1, piplus);
+//
+//		// Start PN----------------------------------------------
+//
+//		System.out.println("Quantum UVS started \n ------------------------------");
+//		uvs.pn.Delay = 0;
+//		uvs.BildQPN().Start();
+//	
+////		uvs.BildQPN().clearPrint = false;
+////		PetriNetWindow frame = new PetriNetWindow(false);
+////		frame.petriNet = uvs.BildQPN();
+////		frame.setVisible(true);
+//		
+//		
+//		while(!uvs.pn.StopFlag)
+//		{
+//			
+//		}
+//		System.out.println(uvs.getThrouput());
+//		
+//		//---------------------2nd Round-----------------------------------------
+//		/*pm2 lane sequences:{U11f, U12f, U13f, U14f, 
+//		*                     U21f, U22f, U23f, U24f, 
+//		*                     U31f, U32f, U33f, U34f, 
+//		*                     U41f, U42f, U24f, U44f,
+//		*                     U11r, U12r, U13r, U14r, 
+//		*                     U21r, U22r, U23r, U24r, 
+//		*                     U31r, U32r, U33r, U34r, 
+//		*                     U41r, U42r, U24r, U44r,
+//		*/
+//		
+//		//-----------------2nd round----------------------
+//		
+//		System.out.println("*********************2nd Round**************************");
+//		DataQplace Pm2= uvs.getPm2();
+//		
+//	    piplus = new DataQplace(); // External input
+//		piplus.SetName("p_i_plus");
+//		piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+//
+//		
+//		DataQplace p1Round2 = new DataQplace(); // X
+//		p1Round2.SetName("p1");
+//		p1Round2.SetValue(new Qplace(new Vvector(16, 
+//				piplus.Value.V.QBits.get(0),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				piplus.Value.V.QBits.get(1),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				piplus.Value.V.QBits.get(2),
+//				piplus.Value.V.QBits.get(3),
+//				piplus.Value.V.QBits.get(4),
+//				piplus.Value.V.QBits.get(5),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				piplus.Value.V.QBits.get(6),
+//				piplus.Value.V.QBits.get(7),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))), 
+//				QplacePrintSetting.Both));
+//		
+//		UVS uvs2 = new UVS(gammas, p1Round2, piplus);
+//
+//		// Start PN----------------------------------------------
+//
+//		System.out.println("Quantum UVS started \n ------------------------------");
+//		uvs2.pn.Delay = 0;
+//		uvs2.BildQPN().Start();
+//		
+////		uvs2.BildQPN().clearPrint = false;
+////		PetriNetWindow frame2 = new PetriNetWindow(false);
+////		frame2.petriNet = uvs2.BildQPN();
+////		frame2.setVisible(true);
+//		
+//		while(!uvs2.pn.StopFlag)
+//		{
+//			
+//		}
+//		
+//		System.out.println(uvs2.getThrouput());
+//		//-----------------3nd round----------------------
+//		
+//				System.out.println("*********************2nd Round**************************");
+//				DataQplace Pm22= uvs.getPm2();
+//				
+//			    piplus = new DataQplace(); // External input
+//				piplus.SetName("p_i_plus");
+//				piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+//
+//				
+//				DataQplace p1Round3 = new DataQplace(); // X
+//				p1Round3.SetName("p1");
+//				p1Round3.SetValue(new Qplace(new Vvector(16, 
+//						piplus.Value.V.QBits.get(0),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(9).Alpha.Real+ Pm22.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(6).Alpha.Real+ Pm22.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						piplus.Value.V.QBits.get(1),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(0).Alpha.Real+ Pm22.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(13).Alpha.Real+ Pm22.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						piplus.Value.V.QBits.get(2),
+//						piplus.Value.V.QBits.get(3),
+//						piplus.Value.V.QBits.get(4),
+//						piplus.Value.V.QBits.get(5),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(11).Alpha.Real+ Pm22.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(3).Alpha.Real+ Pm22.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(2).Alpha.Real+ Pm22.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//						piplus.Value.V.QBits.get(6),
+//						piplus.Value.V.QBits.get(7),
+//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(7).Alpha.Real+ Pm22.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))), 
+//						QplacePrintSetting.Both));
+//				
+//				UVS uvs3 = new UVS(gammas, p1Round3, piplus);
+//
+//				// Start PN----------------------------------------------
+//
+//				System.out.println("Quantum UVS started \n ------------------------------");
+//				uvs3.pn.Delay = 0;
+//				uvs3.BildQPN().Start();
+//				
+////				uvs3.BildQPN().clearPrint = true;
+////				PetriNetWindow frame3 = new PetriNetWindow(false);
+////				frame3.petriNet = uvs3.BildQPN();
+////				frame3.setVisible(true);
+//				
+//				while(!uvs3.pn.StopFlag)
+//				{
+//					
+//				}
+//				System.out.println(uvs3.getThrouput());
+		double[] gamma = {  0.1, 0.1, 0.3, 0.3 };
 		Gammas[] gammas = new Gammas[4];
-		gammas[0] = new Gammas((double) Ro, 0.0);
-		gammas[1] = new Gammas((double) Ro, 0.0);
-		gammas[2] = new Gammas((double) Ro, 0.0);
-		gammas[3] = new Gammas((double) Ro, 0.0);
+		for (int i = 0; i < 4; i++)
+			gammas[i] = new Gammas(gamma[i], Math.sqrt(1-gamma[i]*gamma[i]));
+		
+		double[] u_in = { 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3 }; // or some similar values
 
-		DataQplace p1 = new DataQplace(); // X
-		p1.SetName("p1");
-		p1.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-
-		DataQplace piplus = new DataQplace(); // External input
-		piplus.SetName("p_i_plus");
-		piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-
-		UVS uvs = new UVS(gammas, p1, piplus);
-
-		// Start PN----------------------------------------------
-
-		System.out.println("Quantum UVS started \n ------------------------------");
-		uvs.pn.Delay = 0;
-		uvs.BildQPN().Start();
-	
-//		uvs.BildQPN().clearPrint = false;
-//		PetriNetWindow frame = new PetriNetWindow(false);
-//		frame.petriNet = uvs.BildQPN();
-//		frame.setVisible(true);
+		double[] u_x = { 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3 };// for p1
+		UVS uvs = new UVS (gammas, u_in, u_x); // I created a new constroctor that takes double ararys for u_in and u_x 
+		//uvs.setGamma(gammas); //the constructor auto set gamma and uin and ux and create the QPlaces pc, piplus, and p1
+		//uvs.setU(u_in); 
 		
-		
-		while(!uvs.pn.StopFlag)
-		{
-			
-		}
-		System.out.println(uvs.getThrouput());
-		
-		//---------------------2nd Round-----------------------------------------
-		/*pm2 lane sequences:{U11f, U12f, U13f, U14f, 
-		*                     U21f, U22f, U23f, U24f, 
-		*                     U31f, U32f, U33f, U34f, 
-		*                     U41f, U42f, U24f, U44f,
-		*                     U11r, U12r, U13r, U14r, 
-		*                     U21r, U22r, U23r, U24r, 
-		*                     U31r, U32r, U33r, U34r, 
-		*                     U41r, U42r, U24r, U44r,
-		*/
-		
-		//-----------------2nd round----------------------
-		
-		System.out.println("*********************2nd Round**************************");
-		DataQplace Pm2= uvs.getPm2();
-		
-	    piplus = new DataQplace(); // External input
-		piplus.SetName("p_i_plus");
-		piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-
-		
-		DataQplace p1Round2 = new DataQplace(); // X
-		p1Round2.SetName("p1");
-		p1Round2.SetValue(new Qplace(new Vvector(16, 
-				piplus.Value.V.QBits.get(0),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				piplus.Value.V.QBits.get(1),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				piplus.Value.V.QBits.get(2),
-				piplus.Value.V.QBits.get(3),
-				piplus.Value.V.QBits.get(4),
-				piplus.Value.V.QBits.get(5),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				piplus.Value.V.QBits.get(6),
-				piplus.Value.V.QBits.get(7),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))), 
-				QplacePrintSetting.Both));
-		
-		UVS uvs2 = new UVS(gammas, p1Round2, piplus);
-
-		// Start PN----------------------------------------------
-
-		System.out.println("Quantum UVS started \n ------------------------------");
-		uvs2.pn.Delay = 0;
-		uvs2.BildQPN().Start();
-		
-//		uvs2.BildQPN().clearPrint = false;
-//		PetriNetWindow frame2 = new PetriNetWindow(false);
-//		frame2.petriNet = uvs2.BildQPN();
-//		frame2.setVisible(true);
-		
-		while(!uvs2.pn.StopFlag)
-		{
-			
-		}
-		
-		System.out.println(uvs2.getThrouput());
-		//-----------------3nd round----------------------
-		
-				System.out.println("*********************2nd Round**************************");
-				DataQplace Pm22= uvs.getPm2();
-				
-			    piplus = new DataQplace(); // External input
-				piplus.SetName("p_i_plus");
-				piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-
-				
-				DataQplace p1Round3 = new DataQplace(); // X
-				p1Round3.SetName("p1");
-				p1Round3.SetValue(new Qplace(new Vvector(16, 
-						piplus.Value.V.QBits.get(0),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(9).Alpha.Real+ Pm22.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(6).Alpha.Real+ Pm22.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						piplus.Value.V.QBits.get(1),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(0).Alpha.Real+ Pm22.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(13).Alpha.Real+ Pm22.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						piplus.Value.V.QBits.get(2),
-						piplus.Value.V.QBits.get(3),
-						piplus.Value.V.QBits.get(4),
-						piplus.Value.V.QBits.get(5),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(11).Alpha.Real+ Pm22.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(3).Alpha.Real+ Pm22.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(2).Alpha.Real+ Pm22.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-						piplus.Value.V.QBits.get(6),
-						piplus.Value.V.QBits.get(7),
-						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(7).Alpha.Real+ Pm22.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))), 
-						QplacePrintSetting.Both));
-				
-				UVS uvs3 = new UVS(gammas, p1Round3, piplus);
-
-				// Start PN----------------------------------------------
-
-				System.out.println("Quantum UVS started \n ------------------------------");
-				uvs3.pn.Delay = 0;
-				uvs3.BildQPN().Start();
-				
-//				uvs3.BildQPN().clearPrint = true;
-//				PetriNetWindow frame3 = new PetriNetWindow(false);
-//				frame3.petriNet = uvs3.BildQPN();
-//				frame3.setVisible(true);
-				
-				while(!uvs3.pn.StopFlag)
-				{
-					
-				}
-				System.out.println(uvs3.getThrouput());
+		double ThroughPut = uvs.simulateAndGetFitness(gammas, uvs);
+		System.out.println("The Throuput = " + ThroughPut);
 		
 
 	}
 
 
 
-	public static double simulateAndGetFitness(double[] gamma){
-		Gammas[] gammas = new Gammas[4];
-		for (int i = 0; i < 4; i++)
-			gammas[i] = new Gamma(gamma[i], Math.sqrt(1-gamma[i]*gamma[i]));
+	public static double simulateAndGetFitness(Gammas[] gamma, UVS uvs){ //added uvs parameter //this method run the uvs and get the throughput
+		
 
-		double[] u_in = {0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3}; // or some similar values
+		//uvs.runTheSimulation(); //  run the uvs object 
+		//return uvs.getThrouput(); //get the throughput from the uvs
+		
+		// Start PN----------------------------------------------
 
-		UVS uvs = new UVS(); // TODO
-		uvs.setGamma(gammas);
-		uvs.setU(u_in); // TODO
+		System.out.println("Quantum UVS started \n ------------------------------");
+		uvs.pn.Delay = 0;
+		uvs.BildQPN().Start(); //here starts only on console
+//here if you want to show the GUI
+//				uvs.BildQPN().clearPrint = false;
+//				PetriNetWindow frame = new PetriNetWindow(false);
+//				frame.petriNet = uvs.BildQPN();
+//				frame.setVisible(true);
 
-		uvs.runTheSimulation(); // TODO
-		return uvs.getThrouput();
+		while (!uvs.pn.StopFlag) {
+
+		}
+		return(uvs.getThrouput());
 	}
 }
