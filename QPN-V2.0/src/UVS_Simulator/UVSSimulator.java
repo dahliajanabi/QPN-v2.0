@@ -11,10 +11,20 @@ public class UVSSimulator {
         if (uvs == null) { // if this is the firt run, initialize the UVS
             uvs = new UVS(gammas, u, Constants.x_init);
         } else {
-            uvs = uvs.initializeAnotherRound(gammas, u);
+            try {
+				uvs = uvs.initializeAnotherRound(gammas, u);
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         uvs.runToEndFast();
-        uvs = uvs.initializeAnotherRound(gammas, u);
+        try {
+			uvs = uvs.initializeAnotherRound(gammas, u);
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         uvs.runToEndFast();
         return uvs.getThroughput();
     }

@@ -52,12 +52,12 @@ public class PSO {
             else return x;
         }
 
-        double evaluateFitness() {
+        double evaluateFitness() throws CloneNotSupportedException {
             return new UVSSimulator().simulateAndGetFitness(position, false);
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CloneNotSupportedException {
         Particle[] particles = new Particle[NUM_PARTICLES];
         double[] gBest = new double[DIMENSIONS];
         double gBestFitness = Double.MAX_VALUE;

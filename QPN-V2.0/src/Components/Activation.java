@@ -645,7 +645,7 @@ public class Activation implements Serializable {
 		// result qplace that collect all the qbits after the operation
 		DataQplace result = new DataQplace();
 		ArrayList<QBit> QBitResultCollection = new ArrayList<>();
-//		if (Parent.TransitionName == "tmu") {
+//		if (Parent.TransitionName == "tme") {
 //			System.out.println("--------------STOP-------------tmu");
 //		}
 		// perform operation with matrixes (product)

@@ -37,7 +37,7 @@ public class UVS {
 	public DataQplace pc, p1, piplus;
 	public static float Ro = 1 / (float) Math.sqrt(2);
 	public PetriNet pn = new PetriNet();
-	private PetriNet BuildQPN() {
+	public PetriNet BuildQPN() {
 		pn.PetriNetName = "UVS";
 		pn.NetworkPort = 0; // 0 = we don't use sockets
 
@@ -499,198 +499,199 @@ public class UVS {
 		pn.ConstantPlaceList.add(p_cs);
 
 		// ------------Theta Values---------------------------
+		//p1.Beta is replaced with Alpha
 		// Theta forward (using Beta from p1 and Beta from gamma)--------------
 		DataTheta Th101 = new DataTheta();
 		Th101.SetName("p_c101");
 		Th101.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(0).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(0).Alpha.Real * pc.Value.V.QBits.get(0).Beta.Real)));
 		pn.ConstantPlaceList.add(Th101);
 
 		DataTheta Th102 = new DataTheta();
 		Th102.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(1).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(1).Alpha.Real * pc.Value.V.QBits.get(0).Beta.Real)));
 		Th102.SetName("p_c102");
 		pn.ConstantPlaceList.add(Th102);
 
 		DataTheta Th103 = new DataTheta();
 		Th103.SetName("p_c103");
 		Th103.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(2).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(2).Alpha.Real * pc.Value.V.QBits.get(0).Beta.Real)));
 		pn.ConstantPlaceList.add(Th103);
 
 		DataTheta Th104 = new DataTheta();
 		Th104.SetName("p_c104");
 		Th104.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(3).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(3).Alpha.Real * pc.Value.V.QBits.get(0).Beta.Real)));
 		pn.ConstantPlaceList.add(Th104);
 
 		DataTheta Th105 = new DataTheta();
 		Th105.SetName("p_c105");
 		Th105.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(4).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(4).Alpha.Real * pc.Value.V.QBits.get(1).Beta.Real)));
 		pn.ConstantPlaceList.add(Th105);
 
 		DataTheta Th106 = new DataTheta();
 		Th106.SetName("p_c106");
 		Th106.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(5).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(5).Alpha.Real * pc.Value.V.QBits.get(1).Beta.Real)));
 		pn.ConstantPlaceList.add(Th106);
 
 		DataTheta Th107 = new DataTheta();
 		Th107.SetName("p_c107");
 		Th107.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(6).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(6).Alpha.Real * pc.Value.V.QBits.get(1).Beta.Real)));
 		pn.ConstantPlaceList.add(Th107);
 
 		DataTheta Th108 = new DataTheta();
 		Th108.SetName("p_c108");
 		Th108.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(7).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(7).Alpha.Real * pc.Value.V.QBits.get(1).Beta.Real)));
 		pn.ConstantPlaceList.add(Th108);
 
 		DataTheta Th109 = new DataTheta();
 		Th109.SetName("p_c109");
 		Th109.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(8).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(8).Alpha.Real * pc.Value.V.QBits.get(2).Beta.Real)));
 		pn.ConstantPlaceList.add(Th109);
 
 		DataTheta Th110 = new DataTheta();
 		Th110.SetName("p_c110");
 		Th110.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(9).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(9).Alpha.Real * pc.Value.V.QBits.get(2).Beta.Real)));
 		pn.ConstantPlaceList.add(Th110);
 
 		DataTheta Th111 = new DataTheta();
 		Th111.SetName("p_c111");
 		Th111.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(10).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(10).Alpha.Real * pc.Value.V.QBits.get(2).Beta.Real)));
 		pn.ConstantPlaceList.add(Th111);
 
 		DataTheta Th112 = new DataTheta();
 		Th112.SetName("p_c112");
 		Th112.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(11).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(11).Alpha.Real * pc.Value.V.QBits.get(2).Beta.Real)));
 		pn.ConstantPlaceList.add(Th112);
 
 		DataTheta Th113 = new DataTheta();
 		Th113.SetName("p_c113");
 		Th113.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(12).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(12).Alpha.Real * pc.Value.V.QBits.get(3).Beta.Real)));
 		pn.ConstantPlaceList.add(Th113);
 
 		DataTheta Th114 = new DataTheta();
 		Th114.SetName("p_c114");
 		Th114.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(13).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(13).Alpha.Real * pc.Value.V.QBits.get(3).Beta.Real)));
 		pn.ConstantPlaceList.add(Th114);
 
 		DataTheta Th115 = new DataTheta();
 		Th115.SetName("p_c115");
 		Th115.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(14).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(14).Alpha.Real * pc.Value.V.QBits.get(3).Beta.Real)));
 		pn.ConstantPlaceList.add(Th115);
 
 		DataTheta Th116 = new DataTheta();
 		Th116.SetName("p_c116");
 		Th116.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(15).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(15).Alpha.Real * pc.Value.V.QBits.get(3).Beta.Real)));
 		pn.ConstantPlaceList.add(Th116);
 
 		// Theta right (using Alpha from p1 and Beta from gamma)------------------
 		DataTheta Th201 = new DataTheta();
 		Th201.SetName("p_c201");
 		Th201.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(0).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(0).Alpha.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th201);
 
 		DataTheta Th202 = new DataTheta();
 		Th202.SetName("p_c202");
 		Th202.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(1).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(1).Alpha.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th202);
 
 		DataTheta Th203 = new DataTheta();
 		Th203.SetName("p_c203");
 		Th203.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(2).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(2).Alpha.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th203);
 
 		DataTheta Th204 = new DataTheta();
 		Th204.SetName("p_c204");
 		Th204.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(3).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(3).Alpha.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th204);
 
 		DataTheta Th205 = new DataTheta();
 		Th205.SetName("p_c205");
 		Th205.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(4).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(4).Alpha.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th205);
 
 		DataTheta Th206 = new DataTheta();
 		Th206.SetName("p_c206");
 		Th206.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(5).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(5).Alpha.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th206);
 
 		DataTheta Th207 = new DataTheta();
 		Th207.SetName("p_c207");
 		Th207.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(6).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(6).Alpha.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th207);
 
 		DataTheta Th208 = new DataTheta();
 		Th208.SetName("p_c208");
 		Th208.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(7).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(7).Alpha.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th208);
 
 		DataTheta Th209 = new DataTheta();
 		Th209.SetName("p_c209");
 		Th209.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(8).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(8).Alpha.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th209);
 
 		DataTheta Th210 = new DataTheta();
 		Th210.SetName("p_c210");
 		Th210.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(9).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(9).Alpha.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th210);
 
 		DataTheta Th211 = new DataTheta();
 		Th211.SetName("p_c211");
 		Th211.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(10).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(10).Alpha.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th211);
 
 		DataTheta Th212 = new DataTheta();
 		Th212.SetName("p_c212");
 		Th212.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(11).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(11).Alpha.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th212);
 
 		DataTheta Th213 = new DataTheta();
 		Th213.SetName("p_c213");
 		Th213.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(12).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(12).Alpha.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th213);
 
 		DataTheta Th214 = new DataTheta();
 		Th214.SetName("p_c214");
 		Th214.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(13).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(13).Alpha.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th214);
 
 		DataTheta Th215 = new DataTheta();
 		Th215.SetName("p_c215");
 		Th215.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(14).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(14).Alpha.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th215);
 
 		DataTheta Th216 = new DataTheta();
 		Th216.SetName("p_c216");
 		Th216.SetValue(new Theta(
-				(float) Math.acos(1 * p1.Value.V.QBits.get(15).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
+				(float) Math.acos(1 * p1.Value.V.QBits.get(15).Alpha.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
 		pn.ConstantPlaceList.add(Th216);
 
 		// -------------------Transitions----------------------
@@ -1057,7 +1058,7 @@ public class UVS {
 		return pn.Throughput;
 	}
 
-	private double[] getX(){
+	private double[] getX() throws CloneNotSupportedException{
 		double[] x = new double[16];
 		for (int i=0;i<16;i++)
 			x[i] = this.pn.getPlaceByName("p_m1").Value.V.QBits.get(i).Alpha.Real;
@@ -1071,7 +1072,7 @@ public class UVS {
 		return this.getThroughput();
 	}
 
-	public UVS initializeAnotherRound(Gammas[] gammas, double[] u_in) {
+	public UVS initializeAnotherRound(Gammas[] gammas, double[] u_in) throws CloneNotSupportedException {
 		DataQplace piplus = getPiplusWithU(u_in);
 		DataQplace Pm2 = this.pn.getPlaceByName("p_m2");
 		DataQplace p1Round2 = getP1FromPm2AndPiplus(Pm2, piplus);
