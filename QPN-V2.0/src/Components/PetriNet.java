@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import DataObjects.DataQplace;
 import Enumerations.PetriNetState;
 import Enumerations.PetriObjectType;
 import Interfaces.PetriObject;
@@ -17,7 +18,7 @@ import Utilities.Functions;
 public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	public PetriNetState PetriState = PetriNetState.None;
@@ -141,7 +142,7 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 				if (Transitions.get(i).IsReversible
 						&& !util.TransitionExist(Transitions.get(i).GetName(), ReversibleExecutionList)
 						|| !Transitions.get(i).IsReversible
-								&& !util.TransitionExist(Transitions.get(i).GetName(), NonReversibleExecutionList)) {
+						&& !util.TransitionExist(Transitions.get(i).GetName(), NonReversibleExecutionList)) {
 					if (Transitions.get(i).CheckConditions()) {
 						try {
 							toNull.addAll(Transitions.get(i).BookTokens());
@@ -219,11 +220,11 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 	}
 
 	public void PrintThis(String text, Exception e) {
-		m_lDataLoadFinished.onDataLoadFinishedListener(text);
-		if (e != null) {
-			e.printStackTrace();
-		}
-		System.out.println(text);
+//		m_lDataLoadFinished.onDataLoadFinishedListener(text);
+//		if (e != null) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(text);
 	}
 
 	@Override
@@ -237,83 +238,83 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 	}
 
 	public void PrintPlaceList() {
-
-		ArrayList<String> toPrint = new ArrayList<String>();
-		boolean isAllNull = true;
-		for (PetriObject petriObject : PlaceList) {
-			if (petriObject == null) {
-				toPrint.add("NULL");
-			} else if (petriObject.IsPrintable()) {
-			
-				String placeString=petriObject.ToStringWithParam(PrintingImaginaryNumbers);
-				toPrint.add(placeString);
-				if(!placeString.contains("Null"))
-				{
-					isAllNull = false;
-				}
-			}
-		}
-
-		if (!isAllNull) {
-			for (String item : toPrint)
-				PrintThis(item, null);
-		}
+//
+//		ArrayList<String> toPrint = new ArrayList<String>();
+//		boolean isAllNull = true;
+//		for (PetriObject petriObject : PlaceList) {
+//			if (petriObject == null) {
+//				toPrint.add("NULL");
+//			} else if (petriObject.IsPrintable()) {
+//
+//				String placeString=petriObject.ToStringWithParam(PrintingImaginaryNumbers);
+//				toPrint.add(placeString);
+//				if(!placeString.contains("Null"))
+//				{
+//					isAllNull = false;
+//				}
+//			}
+//		}
+//
+//		if (!isAllNull) {
+//			for (String item : toPrint)
+//				PrintThis(item, null);
+//		}
 	}
 
 	public void PrintPetri() {
-		if (clearPrint) {
-			String toPrint = "-----------------------------------------------------------";
-			PrintThis(toPrint, null);
-			PrintPlaceList();
-			return;
-		}
-		ArrayList<String> temp1 = new ArrayList<String>();
-		for (PetriObject petriObject : PlaceList) {
-			if (petriObject == null)
-				temp1.add("NULL");
-			else if (petriObject.IsPrintable())
-				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
-		}
-
-		msg = name + " PlaceList [" + String.join("  ", temp1) + "]";
-		PrintThis(msg, null);
-
-		temp1 = new ArrayList<String>();
-		for (PetriObject petriObject : ConstantPlaceList) {
-			if (petriObject == null)
-				temp1.add("NULL");
-			else if (petriObject.IsPrintable())
-				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
-		}
-
-		msg = name + " ConstantPlaceList [" + String.join("  ", temp1) + "]";
-		PrintThis(msg, null);
+//		if (clearPrint) {
+//			String toPrint = "-----------------------------------------------------------";
+//			PrintThis(toPrint, null);
+//			PrintPlaceList();
+//			return;
+//		}
+//		ArrayList<String> temp1 = new ArrayList<String>();
+//		for (PetriObject petriObject : PlaceList) {
+//			if (petriObject == null)
+//				temp1.add("NULL");
+//			else if (petriObject.IsPrintable())
+//				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
+//		}
+//
+//		msg = name + " PlaceList [" + String.join("  ", temp1) + "]";
+//		PrintThis(msg, null);
+//
+//		temp1 = new ArrayList<String>();
+//		for (PetriObject petriObject : ConstantPlaceList) {
+//			if (petriObject == null)
+//				temp1.add("NULL");
+//			else if (petriObject.IsPrintable())
+//				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
+//		}
+//
+//		msg = name + " ConstantPlaceList [" + String.join("  ", temp1) + "]";
+//		PrintThis(msg, null);
 	}
 
 	public void PrintReversibleExecutionList() {
-		ArrayList<String> temp1 = new ArrayList<String>();
-		for (PetriObject petriObject : ReversibleExecutionList) {
-			if (petriObject == null)
-				temp1.add("NULL");
-			else
-				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
-		}
-
-		msg = name + " ReversibleExecutionList [" + String.join(",", temp1) + "]";
-		PrintThis(msg, null);
+//		ArrayList<String> temp1 = new ArrayList<String>();
+//		for (PetriObject petriObject : ReversibleExecutionList) {
+//			if (petriObject == null)
+//				temp1.add("NULL");
+//			else
+//				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
+//		}
+//
+//		msg = name + " ReversibleExecutionList [" + String.join(",", temp1) + "]";
+//		PrintThis(msg, null);
 	}
 
 	public void PrintNonReversibleExecutionList() {
-		ArrayList<String> temp1 = new ArrayList<String>();
-		for (PetriObject petriObject : NonReversibleExecutionList) {
-			if (petriObject == null)
-				temp1.add("NULL");
-			else
-				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
-		}
-
-		msg = name + " NonReversibleExecutionList [" + String.join(",", temp1) + "]";
-		PrintThis(msg, null);
+//		ArrayList<String> temp1 = new ArrayList<String>();
+//		for (PetriObject petriObject : NonReversibleExecutionList) {
+//			if (petriObject == null)
+//				temp1.add("NULL");
+//			else
+//				temp1.add(petriObject.ToStringWithParam(PrintingImaginaryNumbers));
+//		}
+//
+//		msg = name + " NonReversibleExecutionList [" + String.join(",", temp1) + "]";
+//		PrintThis(msg, null);
 	}
 
 	private DataOverNetwork inputdata = new DataOverNetwork();
@@ -393,5 +394,15 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 	@Override
 	public String ToStringWithParam(boolean b) {
 		return toString();
+	}
+
+	public DataQplace getPlaceByName(String pName) {
+		Functions util = new Functions();
+		PetriObject input1 = util.GetFromListByName(pName, this.PlaceList);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return null;
+		}
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+		return result;
 	}
 }

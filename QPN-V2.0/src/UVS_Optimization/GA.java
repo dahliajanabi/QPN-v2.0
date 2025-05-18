@@ -1,5 +1,8 @@
+package UVS_Optimization;
+
 import java.text.DecimalFormat;
 
+import UVS_Simulator.UVSSimulator;
 import org.jgap.*;
 import org.jgap.impl.*;
 public class GA {
@@ -7,8 +10,7 @@ public class GA {
     public static void main(String[] args) throws InvalidConfigurationException{
         Configuration conf = new DefaultConfiguration();
         Configuration.resetProperty(Configuration.PROPERTY_FITEVAL_INST);
-        //low value for fitness = better
-        conf.setFitnessEvaluator(new DeltaFitnessEvaluator());
+        //conf.setFitnessEvaluator(new DeltaFitnessEvaluator());//low value for fitness = better
         conf.setPreservFittestIndividual(true);
         conf.setKeepPopulationSizeConstant(true);
 
@@ -31,7 +33,7 @@ public class GA {
 class SSTFitness extends FitnessFunction {
     public double evaluate(IChromosome chr) {
         double[] gamma = Mapping(chr);
-        return UVS.simulateAndGetFitness(gamma);
+        return new UVSSimulator().simulateAndGetFitness(gamma, false);
     }
     //add Mapping(chr) method
     public static double[] Mapping(IChromosome chr)

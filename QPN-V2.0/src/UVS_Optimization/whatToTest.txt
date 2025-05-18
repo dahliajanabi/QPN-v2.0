@@ -1,0 +1,8 @@
+We have to perform several tests (same with PSO and GA)
+
+1. run the optimization algorithm with Constants.U1, get gamma1
+2. run the optimization algorithm with Constants.U2, get gamma2
+3. run the optimization algorithm with Constants.U3, get gamma3
+
+make a graphic with the system running on (u1,gamma1), then (u2,gamma2), then (u3, gamma3)
+display: u, gamma, throughput

@@ -1,28 +1,23 @@
 package UVS_Simulator;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import Components.Activation;
 import Components.LaneActivationParameter;
 import Components.Condition;
 import Components.CustomUnitaryMatrixParameter;
 import Components.GuardMapping;
-import Components.IntersectionActivationParameter;
 import Components.PetriNet;
-import Components.PetriNetWindow;
 import Components.PetriTransition;
 import Components.UnitaryMatrixParameter;
 import DataObjects.DataDigital;
 import DataObjects.DataQplace;
 import DataObjects.DataTheta;
-import DataObjects.DataTransfer;
 import DataObjects.DataUnitaryMatrix;
 import DataObjects.DataUnitaryThetaMatrix;
 import DataOnly.ComplexValue;
 import DataOnly.Digital;
 import DataOnly.Qplace;
 import DataOnly.Theta;
-import DataOnly.TransferOperation;
 import DataOnly.UnitaryMatrix;
 import DataOnly.UnitaryThetaMatrix;
 import DataOnly.UnitaryThetaMatrixValue;
@@ -42,90 +37,9 @@ public class UVS {
 	public DataQplace pc, p1, piplus;
 	public static float Ro = 1 / (float) Math.sqrt(2);
 	public PetriNet pn = new PetriNet();
-	
-	public UVS(Gammas[] gammas, DataQplace p1, DataQplace piplus) {
-		this.setGamma(gammas);
-		this.p1 = p1;
-		this.piplus = piplus;
-	}
-	
-	public UVS(Gammas[] gammas, double[] uin, double[] ux) {
-		this.setGamma(gammas);
-		this.setUin(uin);
-		this.setUx(ux);
-	}
-
-	public void setGamma(Gammas[] gammas) {
-		this.gammas = gammas;
-		this.pc = new DataQplace();
-		this.pc.SetName("p_c");
-		this.pc.SetValue(new Qplace(
-				new Vvector(4,
-						new QBit(new ComplexValue(this.gammas[0].a, 0.0f), new ComplexValue(this.gammas[0].b, 0.0f)),
-						new QBit(new ComplexValue(this.gammas[1].a, 0.0f), new ComplexValue(this.gammas[1].b, 0.0f)),
-						new QBit(new ComplexValue(this.gammas[2].a, 0.0f), new ComplexValue(this.gammas[2].b, 0.0f)),
-						new QBit(new ComplexValue(this.gammas[3].a, 0.0f), new ComplexValue(this.gammas[3].b, 0.0f))),
-				QplacePrintSetting.Both));
-	}
-	
-	public void setUin(double[] uin) {
-		this.piplus = new DataQplace(); // External input
-		this.piplus.SetName("p_i_plus");
-		this.piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue((float)uin[0], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[1], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[2], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[3], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[4], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[5], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[6], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)uin[7], 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-	}
-	
-	public void setUx(double[] ux) {
-		this.p1 = new DataQplace(); // X
-		this.p1.SetName("p1");
-		this.p1.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue((float)ux[0], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[1], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[2], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[3], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[4], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[5], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[6], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[7], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[8], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[9], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[10], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[11], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[12], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[13], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[14], 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue((float)ux[15], 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-	}
-	
-	public double getThrouput () {
-		return pn.Throughput;
-	}
-	
-	public DataQplace getPm2() throws CloneNotSupportedException
-	{
-		return getPlaceFromPetri("p_m2");
-	}
-	
-	
-	
-	public DataQplace getPlaceFromPetri (String pName) throws CloneNotSupportedException {
-		Functions	util = new Functions();
-		PetriObject input1 = util.GetFromListByName(pName, pn.PlaceList);
-		if (input1 == null && !(input1 instanceof DataQplace)) {
-			return null;
-		}
-		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
-		return result;
-	}
-
-	public PetriNet BildQPN() {
+	private PetriNet BuildQPN() {
 		pn.PetriNetName = "UVS";
-		pn.NetworkPort = 1080;
+		pn.NetworkPort = 0; // 0 = we don't use sockets
 
 		// -------------Unitary Matrixes----------------
 		// RF matrixes-----------------------------------
@@ -133,7 +47,7 @@ public class UVS {
 		constantValue101.SetName("Rf01");
 		constantValue101.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c101"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c101"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c101"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c101"))); // theta f
@@ -143,7 +57,7 @@ public class UVS {
 		constantValue102.SetName("Rf02");
 		constantValue102.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c102"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c102"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c102"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c102"))); // theta f
@@ -153,7 +67,7 @@ public class UVS {
 		constantValue103.SetName("Rf03");
 		constantValue103.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c103"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c103"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c103"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c103"))); // theta f
@@ -163,7 +77,7 @@ public class UVS {
 		constantValue104.SetName("Rf04");
 		constantValue104.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c104"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c104"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c104"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c104"))); // theta f
@@ -173,7 +87,7 @@ public class UVS {
 		constantValue105.SetName("Rf05");
 		constantValue105.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c105"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c105"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c105"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c105"))); // theta f
@@ -183,7 +97,7 @@ public class UVS {
 		constantValue106.SetName("Rf06");
 		constantValue106.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c106"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c106"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c106"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c106"))); // theta f
@@ -193,7 +107,7 @@ public class UVS {
 		constantValue107.SetName("Rf07");
 		constantValue107.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c107"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c107"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c107"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c107"))); // theta f
@@ -203,7 +117,7 @@ public class UVS {
 		constantValue108.SetName("Rf08");
 		constantValue108.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c108"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c108"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c108"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c108"))); // theta f
@@ -213,7 +127,7 @@ public class UVS {
 		constantValue109.SetName("Rf09");
 		constantValue109.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c109"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c109"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c109"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c109"))); // theta f
@@ -223,7 +137,7 @@ public class UVS {
 		constantValue110.SetName("Rf10");
 		constantValue110.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c110"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c110"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c110"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c110"))); // theta f
@@ -233,7 +147,7 @@ public class UVS {
 		constantValue111.SetName("Rf11");
 		constantValue111.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c111"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c111"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c111"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c111"))); // theta f
@@ -243,7 +157,7 @@ public class UVS {
 		constantValue112.SetName("Rf12");
 		constantValue112.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c112"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c112"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c112"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c112"))); // theta f
@@ -253,7 +167,7 @@ public class UVS {
 		constantValue113.SetName("Rf13");
 		constantValue113.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c113"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c113"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c113"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c113"))); // theta f
@@ -263,7 +177,7 @@ public class UVS {
 		constantValue114.SetName("Rf14");
 		constantValue114.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c114"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c114"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c114"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c114"))); // theta f
@@ -273,7 +187,7 @@ public class UVS {
 		constantValue115.SetName("Rf15");
 		constantValue115.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c115"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c115"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c115"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c115"))); // theta f
@@ -283,7 +197,7 @@ public class UVS {
 		constantValue116.SetName("Rf16");
 		constantValue116.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c116"), // theta
-																															// f
+						// f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c116"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c116"), // theta f
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c116"))); // theta f
@@ -294,7 +208,7 @@ public class UVS {
 		constantValue201.SetName("Rr01");
 		constantValue201.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c201"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c201"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c201"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c201"))); // theta r
@@ -304,7 +218,7 @@ public class UVS {
 		constantValue202.SetName("Rr02");
 		constantValue202.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c202"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c202"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c202"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c202"))); // theta r
@@ -314,7 +228,7 @@ public class UVS {
 		constantValue203.SetName("Rr03");
 		constantValue203.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c203"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c203"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c203"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c203"))); // theta r
@@ -324,7 +238,7 @@ public class UVS {
 		constantValue204.SetName("Rr04");
 		constantValue204.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c204"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c204"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c204"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c204"))); // theta r
@@ -334,7 +248,7 @@ public class UVS {
 		constantValue205.SetName("Rr05");
 		constantValue205.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c205"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c205"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c205"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c205"))); // theta r
@@ -344,7 +258,7 @@ public class UVS {
 		constantValue206.SetName("Rr06");
 		constantValue206.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c206"), // thet
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c206"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c206"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c206"))); // theta r
@@ -354,7 +268,7 @@ public class UVS {
 		constantValue207.SetName("Rr07");
 		constantValue207.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c207"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c207"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c207"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c207"))); // theta r
@@ -364,7 +278,7 @@ public class UVS {
 		constantValue208.SetName("Rr08");
 		constantValue208.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c208"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c208"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c208"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c208"))); // theta r
@@ -374,7 +288,7 @@ public class UVS {
 		constantValue209.SetName("Rr09");
 		constantValue209.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c209"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c209"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c209"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c209"))); // theta r
@@ -384,7 +298,7 @@ public class UVS {
 		constantValue210.SetName("Rr10");
 		constantValue210.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c210"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c210"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c210"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c210"))); // theta r
@@ -394,7 +308,7 @@ public class UVS {
 		constantValue211.SetName("Rr11");
 		constantValue211.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c211"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c211"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c211"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c211"))); // theta r
@@ -404,7 +318,7 @@ public class UVS {
 		constantValue212.SetName("Rr12");
 		constantValue212.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c212"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c212"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c212"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c212"))); // theta r
@@ -414,7 +328,7 @@ public class UVS {
 		constantValue213.SetName("Rr13");
 		constantValue213.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c213"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c213"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c213"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c213"))); // theta r
@@ -424,7 +338,7 @@ public class UVS {
 		constantValue214.SetName("Rr14");
 		constantValue214.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c214"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c214"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c214"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c214"))); // theta r
@@ -434,7 +348,7 @@ public class UVS {
 		constantValue215.SetName("Rr15");
 		constantValue215.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c215"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c215"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c215"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c215"))); // theta r
@@ -444,7 +358,7 @@ public class UVS {
 		constantValue216.SetName("Rr16");
 		constantValue216.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c216"), // theta
-																															// r
+						// r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c216"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c216"), // theta r
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c216"))); // theta r
@@ -455,7 +369,7 @@ public class UVS {
 		constantValue3.SetName("Rx");
 		constantValue3.SetValue(
 				new UnitaryThetaMatrix(2, 2, new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c3"), // theta
-																														// x
+						// x
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.MinusSin, "p_c3"), // theta x
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Sin, "p_c3"), // theta x
 						new UnitaryThetaMatrixValue(UnitaryThetaMatrixValueFuncType.Cos, "p_c3"))); // theta x
@@ -926,10 +840,10 @@ public class UVS {
 
 		grdT5.condition = T5Ct1;
 		grdT5.Activations.add(new Activation(t5, "p4", Indexes, TransitionOperation.SplitIndexesQbit, "p_4s"));// takes
-																												// the
-																												// first
-																												// 8
-																												// qbits
+		// the
+		// first
+		// 8
+		// qbits
 		t5.GuardMappingList.add(grdT5);
 		pn.Transitions.add(t5);
 
@@ -1080,9 +994,9 @@ public class UVS {
 		GuardMapping grdTout = new GuardMapping();
 		grdTout.condition = ToutCt1;
 //		grdTout.Activations.add(new Activation(tout, liststringwithinputplaces, TransitionOperation.WriteToFile,
-//				"D:\\PetriInputData\\uvsOutput.txt")); 
-		grdTout.Activations.add(new Activation(tout, "p_m1", TransitionOperation.Throughput)); 
-		
+//				"D:\\PetriInputData\\uvsOutput.txt"));
+		grdTout.Activations.add(new Activation(tout, "p_m1", TransitionOperation.Throughput));
+
 		tout.GuardMappingList.add(grdTout);
 
 		pn.Transitions.add(tout);
@@ -1090,227 +1004,119 @@ public class UVS {
 		return pn;
 	}
 
-	public static void main(String[] args) throws CloneNotSupportedException {
-//		Gammas[] gammas = new Gammas[4];
-//		gammas[0] = new Gammas((double) Ro, 0.0);
-//		gammas[1] = new Gammas((double) Ro, 0.0);
-//		gammas[2] = new Gammas((double) Ro, 0.0);
-//		gammas[3] = new Gammas((double) Ro, 0.0);
-//
-//		DataQplace p1 = new DataQplace(); // X
-//		p1.SetName("p1");
-//		p1.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-//
-//		DataQplace piplus = new DataQplace(); // External input
-//		piplus.SetName("p_i_plus");
-//		piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-//
-//		UVS uvs = new UVS(gammas, p1, piplus);
-//
-//		// Start PN----------------------------------------------
-//
-//		System.out.println("Quantum UVS started \n ------------------------------");
-//		uvs.pn.Delay = 0;
-//		uvs.BildQPN().Start();
-//	
-////		uvs.BildQPN().clearPrint = false;
-////		PetriNetWindow frame = new PetriNetWindow(false);
-////		frame.petriNet = uvs.BildQPN();
-////		frame.setVisible(true);
-//		
-//		
-//		while(!uvs.pn.StopFlag)
-//		{
-//			
-//		}
-//		System.out.println(uvs.getThrouput());
-//		
-//		//---------------------2nd Round-----------------------------------------
-//		/*pm2 lane sequences:{U11f, U12f, U13f, U14f, 
-//		*                     U21f, U22f, U23f, U24f, 
-//		*                     U31f, U32f, U33f, U34f, 
-//		*                     U41f, U42f, U24f, U44f,
-//		*                     U11r, U12r, U13r, U14r, 
-//		*                     U21r, U22r, U23r, U24r, 
-//		*                     U31r, U32r, U33r, U34r, 
-//		*                     U41r, U42r, U24r, U44r,
-//		*/
-//		
-//		//-----------------2nd round----------------------
-//		
-//		System.out.println("*********************2nd Round**************************");
-//		DataQplace Pm2= uvs.getPm2();
-//		
-//	    piplus = new DataQplace(); // External input
-//		piplus.SetName("p_i_plus");
-//		piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-//
-//		
-//		DataQplace p1Round2 = new DataQplace(); // X
-//		p1Round2.SetName("p1");
-//		p1Round2.SetValue(new Qplace(new Vvector(16, 
-//				piplus.Value.V.QBits.get(0),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				piplus.Value.V.QBits.get(1),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				piplus.Value.V.QBits.get(2),
-//				piplus.Value.V.QBits.get(3),
-//				piplus.Value.V.QBits.get(4),
-//				piplus.Value.V.QBits.get(5),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//				piplus.Value.V.QBits.get(6),
-//				piplus.Value.V.QBits.get(7),
-//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))), 
-//				QplacePrintSetting.Both));
-//		
-//		UVS uvs2 = new UVS(gammas, p1Round2, piplus);
-//
-//		// Start PN----------------------------------------------
-//
-//		System.out.println("Quantum UVS started \n ------------------------------");
-//		uvs2.pn.Delay = 0;
-//		uvs2.BildQPN().Start();
-//		
-////		uvs2.BildQPN().clearPrint = false;
-////		PetriNetWindow frame2 = new PetriNetWindow(false);
-////		frame2.petriNet = uvs2.BildQPN();
-////		frame2.setVisible(true);
-//		
-//		while(!uvs2.pn.StopFlag)
-//		{
-//			
-//		}
-//		
-//		System.out.println(uvs2.getThrouput());
-//		//-----------------3nd round----------------------
-//		
-//				System.out.println("*********************2nd Round**************************");
-//				DataQplace Pm22= uvs.getPm2();
-//				
-//			    piplus = new DataQplace(); // External input
-//				piplus.SetName("p_i_plus");
-//				piplus.SetValue(new Qplace(new Vvector(8, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(Ro, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
-//
-//				
-//				DataQplace p1Round3 = new DataQplace(); // X
-//				p1Round3.SetName("p1");
-//				p1Round3.SetValue(new Qplace(new Vvector(16, 
-//						piplus.Value.V.QBits.get(0),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(9).Alpha.Real+ Pm22.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(6).Alpha.Real+ Pm22.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						piplus.Value.V.QBits.get(1),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(0).Alpha.Real+ Pm22.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(13).Alpha.Real+ Pm22.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						piplus.Value.V.QBits.get(2),
-//						piplus.Value.V.QBits.get(3),
-//						piplus.Value.V.QBits.get(4),
-//						piplus.Value.V.QBits.get(5),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(11).Alpha.Real+ Pm22.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(3).Alpha.Real+ Pm22.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(2).Alpha.Real+ Pm22.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-//						piplus.Value.V.QBits.get(6),
-//						piplus.Value.V.QBits.get(7),
-//						new QBit(new ComplexValue(Pm22.Value.V.QBits.get(7).Alpha.Real+ Pm22.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))), 
-//						QplacePrintSetting.Both));
-//				
-//				UVS uvs3 = new UVS(gammas, p1Round3, piplus);
-//
-//				// Start PN----------------------------------------------
-//
-//				System.out.println("Quantum UVS started \n ------------------------------");
-//				uvs3.pn.Delay = 0;
-//				uvs3.BildQPN().Start();
-//				
-////				uvs3.BildQPN().clearPrint = true;
-////				PetriNetWindow frame3 = new PetriNetWindow(false);
-////				frame3.petriNet = uvs3.BildQPN();
-////				frame3.setVisible(true);
-//				
-//				while(!uvs3.pn.StopFlag)
-//				{
-//					
-//				}
-//				System.out.println(uvs3.getThrouput());
-		double[] gamma = {  0.1, 0.1, 0.3, 0.3 };
-		Gammas[] gammas = new Gammas[4];
-		for (int i = 0; i < 4; i++)
-			gammas[i] = new Gammas(gamma[i], Math.sqrt(1-gamma[i]*gamma[i]));
-		
-		double[] u_in = { 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3 }; // or some similar values
-
-		double[] u_x = { 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3, 0.1, 0.1, 0.3, 0.3 };// for p1
-		UVS uvs = new UVS (gammas, u_in, u_x); // I created a new constroctor that takes double ararys for u_in and u_x 
-		//uvs.setGamma(gammas); //the constructor auto set gamma and uin and ux and create the QPlaces pc, piplus, and p1
-		//uvs.setU(u_in); 
-		
-		double ThroughPut = uvs.simulateAndGetFitness(gammas, uvs);
-		System.out.println("The Throuput = " + ThroughPut);
-		
-
+	public UVS(Gammas[] gammas, DataQplace p1, DataQplace piplus) {
+		this.setGamma(gammas);
+		this.p1 = p1;
+		this.piplus = piplus;
 	}
 
+	public UVS(Gammas[] gammas, double[] uin, double[] ux) {
+		this.setGamma(gammas);
+		this.setUin(uin);
+		this.setUx(ux);
+	}
 
+	public void setGamma(Gammas[] gammas) {
+		this.gammas = gammas;
+		this.pc = new DataQplace();
+		this.pc.SetName("p_c");
+		this.pc.SetValue(new Qplace(new Vvector(4,
+				new QBit(new ComplexValue(this.gammas[0].a, 0.0f), new ComplexValue(this.gammas[0].b, 0.0f)),
+				new QBit(new ComplexValue(this.gammas[1].a, 0.0f), new ComplexValue(this.gammas[1].b, 0.0f)),
+				new QBit(new ComplexValue(this.gammas[2].a, 0.0f), new ComplexValue(this.gammas[2].b, 0.0f)),
+				new QBit(new ComplexValue(this.gammas[3].a, 0.0f), new ComplexValue(this.gammas[3].b, 0.0f))),
+				QplacePrintSetting.Both));
+	}
 
-	public static double simulateAndGetFitness(Gammas[] gamma, UVS uvs){ //added uvs parameter //this method run the uvs and get the throughput
-		
+	public void setUin(double[] uin){
+		this.piplus = getPiplusWithU(uin);
+	}
+	public void setUx(double[] ux) {
+		this.p1 = new DataQplace(); // X
+		this.p1.SetName("p1");
+		this.p1.SetValue(new Qplace(new Vvector(16,
+				new QBit(new ComplexValue((float)ux[0], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[1], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[2], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[3], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[4], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[5], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[6], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[7], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[8], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[9], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[10], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[11], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[12], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[13], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[14], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)ux[15], 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+	}
 
-		//uvs.runTheSimulation(); //  run the uvs object 
-		//return uvs.getThrouput(); //get the throughput from the uvs
-		
-		// Start PN----------------------------------------------
+	public double getThroughput () {
+		return pn.Throughput;
+	}
 
-		System.out.println("Quantum UVS started \n ------------------------------");
-		uvs.pn.Delay = 0;
-		uvs.BildQPN().Start(); //here starts only on console
-//here if you want to show the GUI
-//				uvs.BildQPN().clearPrint = false;
-//				PetriNetWindow frame = new PetriNetWindow(false);
-//				frame.petriNet = uvs.BildQPN();
-//				frame.setVisible(true);
+	private double[] getX(){
+		double[] x = new double[16];
+		for (int i=0;i<16;i++)
+			x[i] = this.pn.getPlaceByName("p_m1").Value.V.QBits.get(i).Alpha.Real;
+		return x;
+	}
 
-		while (!uvs.pn.StopFlag) {
+	public double runToEndFast(){
+		this.pn.Delay = 0;
+		this.BuildQPN().Start();
+		while (!this.pn.StopFlag) {	}
+		return this.getThroughput();
+	}
 
-		}
-		return(uvs.getThrouput());
+	public UVS initializeAnotherRound(Gammas[] gammas, double[] u_in) {
+		DataQplace piplus = getPiplusWithU(u_in);
+		DataQplace Pm2 = this.pn.getPlaceByName("p_m2");
+		DataQplace p1Round2 = getP1FromPm2AndPiplus(Pm2, piplus);
+
+		UVS uvs2 = new UVS(gammas, p1Round2, piplus);
+		return uvs2;
+	}
+
+	private DataQplace getPiplusWithU(double[] uin) {
+		DataQplace piplus = new DataQplace(); // External input
+		piplus.SetName("p_i_plus");
+		piplus.SetValue(new Qplace(new Vvector(8,
+				new QBit(new ComplexValue((float)uin[0], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[1], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[2], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[3], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[4], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[5], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[6], 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue((float)uin[7], 0.0f), new ComplexValue(0.0f, 0.0f))),
+				QplacePrintSetting.Both));
+		return piplus;
+	}
+
+	private DataQplace getP1FromPm2AndPiplus(DataQplace Pm2, DataQplace piplus){
+		DataQplace p1Round2 = new DataQplace(); // X
+		p1Round2.SetName("p1");
+		p1Round2.SetValue(new Qplace(new Vvector(16,
+				piplus.Value.V.QBits.get(0),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				piplus.Value.V.QBits.get(1),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				piplus.Value.V.QBits.get(2),
+				piplus.Value.V.QBits.get(3),
+				piplus.Value.V.QBits.get(4),
+				piplus.Value.V.QBits.get(5),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+				piplus.Value.V.QBits.get(6),
+				piplus.Value.V.QBits.get(7),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))),
+				QplacePrintSetting.Both));
+		return p1Round2;
 	}
 }

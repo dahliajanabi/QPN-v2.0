@@ -1,3 +1,7 @@
+package UVS_Optimization;
+
+import UVS_Simulator.UVSSimulator;
+
 import java.util.Random;
 
 public class PSO {
@@ -49,7 +53,7 @@ public class PSO {
         }
 
         double evaluateFitness() {
-            return UVS.simulateAndGetFitness(position);
+            return new UVSSimulator().simulateAndGetFitness(position, false);
         }
     }
 
@@ -61,7 +65,7 @@ public class PSO {
         for (int i = 0; i < NUM_PARTICLES; i++) {
             particles[i] = new Particle();
             double fitness = particles[i].evaluateFitness();
-            if (fitness < gBestFitness) {
+            if (fitness > gBestFitness) {
                 gBestFitness = fitness;
                 System.arraycopy(particles[i].position, 0, gBest, 0, DIMENSIONS);
             }
@@ -70,11 +74,11 @@ public class PSO {
         for (int iter = 0; iter < MAX_ITERATIONS_PSO; iter++) {
             for (Particle particle : particles) {
                 double fitness = particle.evaluateFitness();
-                if (fitness < particle.pBestFitness) {
+                if (fitness > particle.pBestFitness) {
                     particle.pBestFitness = fitness;
                     System.arraycopy(particle.position, 0, particle.pBest, 0, DIMENSIONS);
                 }
-                if (fitness < gBestFitness) {
+                if (fitness > gBestFitness) {
                     gBestFitness = fitness;
                     System.arraycopy(particle.position, 0, gBest, 0, DIMENSIONS);
                 }
@@ -88,10 +92,11 @@ public class PSO {
     }
 
     private static void printSolution(String prefix, double[] solution, double fitness) {
-        System.out.print(prefix + " solution: [");
+        System.out.print(prefix + ". Fitness: " + String.format("%.6f", fitness));
+        System.out.print(", solution: [");
         for (int i = 0; i < DIMENSIONS; i++) {
             System.out.print(String.format("%.3f", solution[i]) + (i == DIMENSIONS - 1 ? "]" : ", "));
         }
-        System.out.println(", fitness: " + String.format("%.4f", fitness));
+        System.out.println();
     }
 }
