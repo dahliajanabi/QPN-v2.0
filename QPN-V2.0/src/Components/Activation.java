@@ -671,8 +671,8 @@ public class Activation implements Serializable {
 				sum.Imaginary += cv2.Imaginary;
 				// -----------------------------------------------------------
 				ComplexValue cv3 = QBitCollection.get(x).Beta;
-				real = A.Value.Matrix[i][0] * cv3.Real;
-				imaginary = A.Value.Matrix[i][0] * cv3.Imaginary;
+				real = A.Value.Matrix[i][1] * cv3.Real;
+				imaginary = A.Value.Matrix[i][1] * cv3.Imaginary;
 				ComplexValue cv4 = new ComplexValue(real, imaginary);
 				sum.Real += cv4.Real;
 				sum.Imaginary += cv4.Imaginary;

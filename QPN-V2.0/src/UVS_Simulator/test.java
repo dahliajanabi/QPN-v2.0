@@ -24,7 +24,7 @@ public class test {
 		UVS uvs2 = new UVS(g2, Constants.U1, Constants.x_init);
 		PetriNet pn2 = uvs2.BuildQPN();
 		pn2.Delay = 0;
-		pn2.clearPrint = false;
+		pn2.clearPrint = true;
 		PetriNetWindow frame2 = new PetriNetWindow(false);
 		frame2.petriNet = pn2;
 		frame2.setVisible(true);
