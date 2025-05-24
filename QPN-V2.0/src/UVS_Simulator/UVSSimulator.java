@@ -9,7 +9,7 @@ public class UVSSimulator {
         for (int i = 0; i < 4; i++)
             gammas[i] = new Gammas(gamma[i], Math.sqrt(1-gamma[i]*gamma[i]));
         if (uvs == null) { // if this is the firt run, initialize the UVS
-            uvs = new UVS(gammas, u, Constants.x_init);
+            uvs = new UVS(gammas, u, Constants.x_init, null, null);
         } else {
             try {
 				uvs = uvs.initializeAnotherRound(gammas, u);
