@@ -813,21 +813,59 @@ public class UVS {
 	}
 
 	public UVS(Gammas[] gammas, DataQplace p1, DataQplace piplus, DataQplace pf, DataQplace pr) {
+		DataQplace pini = new DataQplace();// initialization place used for initial theta forward and theta right
+        pini.SetName("pini");
+    	pini.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+		
 		this.setGamma(gammas);
 		this.p1 = p1;
 		this.piplus = piplus;
 		if ((pf ==null)&(pr==null))
-			this.setThetas(this.p1, this.p1);
+			this.setThetas(pini, pini);
 		else
 			this.setThetas(pf, pr);
 	}
 
 	public UVS(Gammas[] gammas, double[] uin, double[] ux, DataQplace pf, DataQplace pr) {
+		DataQplace pini = new DataQplace();// initialization place used for initial theta forward and theta right
+        pini.SetName("pini");
+    	pini.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
+    			new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f))), QplacePrintSetting.Both));
+		
 		this.setGamma(gammas);
 		this.setUin(uin);
 		this.setUx(ux);
 		if ((pf ==null)&(pr==null))
-			this.setThetas(this.p1, this.p1);
+			this.setThetas(pini, pini);
 		else
 			this.setThetas(pf, pr);
 	}
@@ -1185,9 +1223,8 @@ public class UVS {
 	
 	public static void main (String[]args) throws CloneNotSupportedException {
 		 Gammas[] gammas = new Gammas[4];
-	        double[] gamma = {0.1, 0.2, 0.3, 0.4};
 			for (int i = 0; i < 4; i++)
-	            gammas[i] = new Gammas(gamma[i], Math.sqrt(1-gamma[i]*gamma[i]));
+	            gammas[i] = new Gammas(0.0, 0.0);
 	        UVS uvs = new UVS(gammas, Constants.U1, Constants.x_init, null, null);
 	        uvs.BuildQPN();
 	        uvs.pn.Delay = 0;
@@ -1197,16 +1234,20 @@ public class UVS {
 	        frame.setVisible(true);
 //	        uvs.pn.Start();
 	        while (!uvs.pn.StopFlag) {}
+	        
 	        //2nd round
-	       
-				UVS uvs2 = uvs.initializeAnotherRound(gammas, Constants.U1) ;
-				 uvs2.BuildQPN();
-				 uvs2.pn.Delay = 0;
-			     uvs2.pn.clearPrint = false;
-			     PetriNetWindow frame2 = new PetriNetWindow(false);
-			     frame2.petriNet = uvs2.pn;
-			     frame2.setVisible(true);
-//			     uvs2.pn.Start();
+	        Gammas[] gammas2 = new Gammas[4];
+	        double[] gamma2 = {0.1, 0.2, 0.3, 0.4};
+	        for (int i = 0; i < 4; i++)
+	        gammas2[i] = new Gammas(gamma2[i], Math.sqrt(1-gamma2[i]*gamma2[i]));
+			UVS uvs2 = uvs.initializeAnotherRound(gammas, Constants.U1) ;
+			uvs2.BuildQPN();
+			uvs2.pn.Delay = 0;
+			uvs2.pn.clearPrint = false;
+			PetriNetWindow frame2 = new PetriNetWindow(false);
+			frame2.petriNet = uvs2.pn;
+			frame2.setVisible(true);
+//			uvs2.pn.Start();
 			
 	       
 	        
