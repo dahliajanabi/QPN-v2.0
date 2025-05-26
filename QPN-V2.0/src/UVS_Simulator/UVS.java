@@ -804,6 +804,7 @@ public class UVS {
 //		grdTout.Activations.add(new Activation(tout, liststringwithinputplaces, TransitionOperation.WriteToFile,
 //				"D:\\PetriInputData\\uvsOutput.txt"));
 		grdTout.Activations.add(new Activation(tout, "p_m1", TransitionOperation.Throughput));
+		grdTout.Activations.add(new Activation(tout, "p_m2", TransitionOperation.exits));
 
 		tout.GuardMappingList.add(grdTout);
 
@@ -842,6 +843,7 @@ public class UVS {
 	}
 
 	public UVS(Gammas[] gammas, double[] uin, double[] ux, DataQplace pf, DataQplace pr) {
+		this.pn=pn;
 		DataQplace pini = new DataQplace();// initialization place used for initial theta forward and theta right
         pini.SetName("pini");
     	pini.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(0.0f, 0.0f), new ComplexValue(0.0f, 0.0f)),
@@ -914,195 +916,195 @@ public class UVS {
 				DataTheta Th101 = new DataTheta();
 				Th101.SetName("p_c101");
 				Th101.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(0).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th101);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(0).Beta.Real, pc.Value.V.QBits.get(0).Beta.Real))));
+				pn.ConstantPlaceList.add(Th101);
 
 				DataTheta Th102 = new DataTheta();
 				Th102.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(1).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(1).Beta.Real, pc.Value.V.QBits.get(0).Beta.Real))));
 				Th102.SetName("p_c102");
-				this.pn.ConstantPlaceList.add(Th102);
+			    pn.ConstantPlaceList.add(Th102);
 
 				DataTheta Th103 = new DataTheta();
 				Th103.SetName("p_c103");
 				Th103.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(2).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th103);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(2).Beta.Real, pc.Value.V.QBits.get(0).Beta.Real))));
+				pn.ConstantPlaceList.add(Th103);
 
 				DataTheta Th104 = new DataTheta();
 				Th104.SetName("p_c104");
 				Th104.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(3).Beta.Real * pc.Value.V.QBits.get(0).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th104);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(3).Beta.Real, pc.Value.V.QBits.get(0).Beta.Real))));
+				pn.ConstantPlaceList.add(Th104);
 
 				DataTheta Th105 = new DataTheta();
 				Th105.SetName("p_c105");
 				Th105.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(4).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th105);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(4).Beta.Real, pc.Value.V.QBits.get(1).Beta.Real))));
+				pn.ConstantPlaceList.add(Th105);
 
 				DataTheta Th106 = new DataTheta();
 				Th106.SetName("p_c106");
 				Th106.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(5).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th106);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(5).Beta.Real, pc.Value.V.QBits.get(1).Beta.Real))));
+				pn.ConstantPlaceList.add(Th106);
 
 				DataTheta Th107 = new DataTheta();
 				Th107.SetName("p_c107");
 				Th107.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(6).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th107);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(6).Beta.Real, pc.Value.V.QBits.get(1).Beta.Real))));
+				pn.ConstantPlaceList.add(Th107);
 
 				DataTheta Th108 = new DataTheta();
 				Th108.SetName("p_c108");
 				Th108.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(7).Beta.Real * pc.Value.V.QBits.get(1).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th108);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(7).Beta.Real, pc.Value.V.QBits.get(1).Beta.Real))));
+				pn.ConstantPlaceList.add(Th108);
 
 				DataTheta Th109 = new DataTheta();
 				Th109.SetName("p_c109");
 				Th109.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(8).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th109);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(8).Beta.Real, pc.Value.V.QBits.get(2).Beta.Real))));
+				pn.ConstantPlaceList.add(Th109);
 
 				DataTheta Th110 = new DataTheta();
 				Th110.SetName("p_c110");
 				Th110.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(9).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th110);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(9).Beta.Real, pc.Value.V.QBits.get(2).Beta.Real))));
+				pn.ConstantPlaceList.add(Th110);
 
 				DataTheta Th111 = new DataTheta();
 				Th111.SetName("p_c111");
 				Th111.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(10).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th111);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(10).Beta.Real, pc.Value.V.QBits.get(2).Beta.Real))));
+				pn.ConstantPlaceList.add(Th111);
 
 				DataTheta Th112 = new DataTheta();
 				Th112.SetName("p_c112");
 				Th112.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(11).Beta.Real * pc.Value.V.QBits.get(2).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th112);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(11).Beta.Real, pc.Value.V.QBits.get(2).Beta.Real))));
+				pn.ConstantPlaceList.add(Th112);
 
 				DataTheta Th113 = new DataTheta();
 				Th113.SetName("p_c113");
 				Th113.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(12).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th113);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(12).Beta.Real, pc.Value.V.QBits.get(3).Beta.Real))));
+				pn.ConstantPlaceList.add(Th113);
 
 				DataTheta Th114 = new DataTheta();
 				Th114.SetName("p_c114");
 				Th114.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(13).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th114);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(13).Beta.Real, pc.Value.V.QBits.get(3).Beta.Real))));
+				pn.ConstantPlaceList.add(Th114);
 
 				DataTheta Th115 = new DataTheta();
 				Th115.SetName("p_c115");
 				Th115.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(14).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th115);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(14).Beta.Real, pc.Value.V.QBits.get(3).Beta.Real))));
+				pn.ConstantPlaceList.add(Th115);
 
 				DataTheta Th116 = new DataTheta();
 				Th116.SetName("p_c116");
 				Th116.SetValue(new Theta(
-						(float) Math.acos(1 * f.Value.V.QBits.get(15).Beta.Real * pc.Value.V.QBits.get(3).Beta.Real)));
-				this.pn.ConstantPlaceList.add(Th116);
+						(float) Math.asin(Math.min( f.Value.V.QBits.get(15).Beta.Real, pc.Value.V.QBits.get(3).Beta.Real))));
+				pn.ConstantPlaceList.add(Th116);
 
 				// Theta right (using Alpha from p1 and Beta from gamma)------------------
 				DataTheta Th201 = new DataTheta();
 				Th201.SetName("p_c201");
 				Th201.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(0).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th201);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(0).Beta.Real, pc.Value.V.QBits.get(0).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th201);
 
 				DataTheta Th202 = new DataTheta();
 				Th202.SetName("p_c202");
 				Th202.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(1).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th202);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(1).Beta.Real, pc.Value.V.QBits.get(0).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th202);
 
 				DataTheta Th203 = new DataTheta();
 				Th203.SetName("p_c203");
 				Th203.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(2).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th203);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(2).Beta.Real, pc.Value.V.QBits.get(0).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th203);
 
 				DataTheta Th204 = new DataTheta();
 				Th204.SetName("p_c204");
 				Th204.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(3).Beta.Real * pc.Value.V.QBits.get(0).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th204);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(3).Beta.Real, pc.Value.V.QBits.get(0).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th204);
 
 				DataTheta Th205 = new DataTheta();
 				Th205.SetName("p_c205");
 				Th205.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(4).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th205);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(4).Beta.Real, pc.Value.V.QBits.get(1).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th205);
 
 				DataTheta Th206 = new DataTheta();
 				Th206.SetName("p_c206");
 				Th206.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(5).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th206);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(5).Beta.Real, pc.Value.V.QBits.get(1).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th206);
 
 				DataTheta Th207 = new DataTheta();
 				Th207.SetName("p_c207");
 				Th207.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(6).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th207);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(6).Beta.Real, pc.Value.V.QBits.get(1).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th207);
 
 				DataTheta Th208 = new DataTheta();
 				Th208.SetName("p_c208");
 				Th208.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(7).Beta.Real * pc.Value.V.QBits.get(1).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th208);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(7).Beta.Real, pc.Value.V.QBits.get(1).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th208);
 
 				DataTheta Th209 = new DataTheta();
 				Th209.SetName("p_c209");
 				Th209.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(8).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th209);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(8).Beta.Real, pc.Value.V.QBits.get(2).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th209);
 
 				DataTheta Th210 = new DataTheta();
 				Th210.SetName("p_c210");
 				Th210.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(9).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th210);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(9).Beta.Real, pc.Value.V.QBits.get(2).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th210);
 
 				DataTheta Th211 = new DataTheta();
 				Th211.SetName("p_c211");
 				Th211.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(10).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th211);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(10).Beta.Real, pc.Value.V.QBits.get(2).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th211);
 
 				DataTheta Th212 = new DataTheta();
 				Th212.SetName("p_c212");
 				Th212.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(11).Beta.Real * pc.Value.V.QBits.get(2).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th212);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(11).Beta.Real, pc.Value.V.QBits.get(2).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th212);
 
 				DataTheta Th213 = new DataTheta();
 				Th213.SetName("p_c213");
 				Th213.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(12).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th213);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(12).Beta.Real, pc.Value.V.QBits.get(3).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th213);
 
 				DataTheta Th214 = new DataTheta();
 				Th214.SetName("p_c214");
 				Th214.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(13).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th214);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(13).Beta.Real, pc.Value.V.QBits.get(3).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th214);
 
 				DataTheta Th215 = new DataTheta();
 				Th215.SetName("p_c215");
 				Th215.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(14).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th215);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(14).Beta.Real, pc.Value.V.QBits.get(3).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th215);
 
 				DataTheta Th216 = new DataTheta();
 				Th216.SetName("p_c216");
 				Th216.SetValue(new Theta(
-						(float) Math.acos(1 * r.Value.V.QBits.get(15).Beta.Real * pc.Value.V.QBits.get(3).Alpha.Real)));
-				this.pn.ConstantPlaceList.add(Th216);
+						(float) Math.asin(Math.min( r.Value.V.QBits.get(15).Beta.Real, pc.Value.V.QBits.get(3).Alpha.Real))));
+				pn.ConstantPlaceList.add(Th216);
 	}
 
 	public double getThroughput () {
@@ -1127,6 +1129,7 @@ public class UVS {
 		DataQplace piplus = getPiplusWithU(u_in);
 		DataQplace Pm2 = this.pn.getPlaceByName("p_m2");
 		DataQplace p1Round2 = this.pn.getPlaceByName("p_m1");
+		p1Round2.SetName("p1");
 		DataQplace PfRound2 = this.getPfFromPm2(Pm2);
 		DataQplace prRound2 = this.getPrFromPm2(Pm2);
 		UVS uvs2 = new UVS(gammas, p1Round2, piplus, PfRound2, prRound2);
@@ -1149,108 +1152,75 @@ public class UVS {
 		return piplus;
 	}
 
-	private DataQplace getP1FromPm2AndPiplus(DataQplace Pm2){
-		DataQplace p1Round2 = new DataQplace(); // X
-		p1Round2.SetName("p1");
-		p1Round2.SetValue(new Qplace(new Vvector(16,
-				piplus.Value.V.QBits.get(0),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				piplus.Value.V.QBits.get(1),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				piplus.Value.V.QBits.get(2),
-				piplus.Value.V.QBits.get(3),
-				piplus.Value.V.QBits.get(4),
-				piplus.Value.V.QBits.get(5),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				piplus.Value.V.QBits.get(6),
-				piplus.Value.V.QBits.get(7),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))),
-				QplacePrintSetting.Both));
-		return p1Round2;
-	}
+//	private DataQplace getP1FromPm2AndPiplus(DataQplace Pm2){
+//		DataQplace p1Round2 = new DataQplace(); // X
+//		p1Round2.SetName("p1");
+//		p1Round2.SetValue(new Qplace(new Vvector(16,
+//				piplus.Value.V.QBits.get(0),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				piplus.Value.V.QBits.get(1),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				piplus.Value.V.QBits.get(2),
+//				piplus.Value.V.QBits.get(3),
+//				piplus.Value.V.QBits.get(4),
+//				piplus.Value.V.QBits.get(5),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
+//				piplus.Value.V.QBits.get(6),
+//				piplus.Value.V.QBits.get(7),
+//				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))),
+//				QplacePrintSetting.Both));
+//		return p1Round2;
+//	}
 	
 	private DataQplace getPfFromPm2(DataQplace Pm2){
 		DataQplace pfRound2 = new DataQplace(); // X
-		pfRound2.SetName("p1");
+		//pfRound2.SetName("pfRound2");
 		pfRound2.SetValue(new Qplace(new Vvector(16,
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(1).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(4).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(5).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(8).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(10).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(12).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(14).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(15).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(0).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(0).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(1).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(1).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(2).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(2).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(3).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(3).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(4).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(4).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(5).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(5).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(6).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(6).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(7).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(7).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(8).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(8).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(9).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(9).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(10).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(10).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(11).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(11).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(12).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(12).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(13).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(13).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(14).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(14).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(15).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(15).Beta.Real, 0.0f))),
 				QplacePrintSetting.Both));
 		return pfRound2;
 	}
 	
 	private DataQplace getPrFromPm2(DataQplace Pm2){
 		DataQplace prRound2 = new DataQplace(); // X
-		prRound2.SetName("p1");
+		//prRound2.SetName("pfRound2");
 		prRound2.SetValue(new Qplace(new Vvector(16,
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(16).Alpha.Real+ Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(17).Alpha.Real+ Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(18).Alpha.Real+ Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(19).Alpha.Real+ Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(20).Alpha.Real+ Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(21).Alpha.Real+ Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(22).Alpha.Real+ Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(23).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(24).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(25).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(26).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(27).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(28).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(29).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(30).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f)),
-				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(31).Alpha.Real+ Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(0.0f, 0.0f))),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(16).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(16).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(17).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(17).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(18).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(18).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(19).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(19).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(20).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(20).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(21).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(21).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(22).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(22).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(23).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(23).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(24).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(24).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(25).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(25).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(26).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(26).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(27).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(27).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(28).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(28).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(29).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(29).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(30).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(30).Beta.Real, 0.0f)),
+				new QBit(new ComplexValue(Pm2.Value.V.QBits.get(31).Alpha.Real, 0.0f), new ComplexValue(Pm2.Value.V.QBits.get(31).Beta.Real, 0.0f))),
 				QplacePrintSetting.Both));
 		return prRound2;
-	}
-	
-	public static void main (String[]args) throws CloneNotSupportedException {
-		 Gammas[] gammas = new Gammas[4];
-			for (int i = 0; i < 4; i++)
-	            gammas[i] = new Gammas(0.0, 0.0);
-	        UVS uvs = new UVS(gammas, Constants.U1, Constants.x_init, null, null);
-	        uvs.BuildQPN();
-	        uvs.pn.Delay = 0;
-	        uvs.pn.clearPrint = false;
-	        PetriNetWindow frame = new PetriNetWindow(false);
-	        frame.petriNet = uvs.pn;
-	        frame.setVisible(true);
-//	        uvs.pn.Start();
-	        while (!uvs.pn.StopFlag) {}
-	        
-	        //2nd round
-	        Gammas[] gammas2 = new Gammas[4];
-	        double[] gamma2 = {0.1, 0.2, 0.3, 0.4};
-	        for (int i = 0; i < 4; i++)
-	        gammas2[i] = new Gammas(gamma2[i], Math.sqrt(1-gamma2[i]*gamma2[i]));
-			UVS uvs2 = uvs.initializeAnotherRound(gammas, Constants.U1) ;
-			uvs2.BuildQPN();
-			uvs2.pn.Delay = 0;
-			uvs2.pn.clearPrint = false;
-			PetriNetWindow frame2 = new PetriNetWindow(false);
-			frame2.petriNet = uvs2.pn;
-			frame2.setVisible(true);
-//			uvs2.pn.Start();
-			
-	       
-	        
-	      
 	}
 }

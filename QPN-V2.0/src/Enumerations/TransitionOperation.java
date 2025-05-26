@@ -21,5 +21,6 @@ public enum TransitionOperation implements Serializable{
 	LaneSplitWithoutOutputThetas,
 	IntersectionSplit,
 	WriteToFile,
-	Throughput
+	Throughput,
+	exits
 }

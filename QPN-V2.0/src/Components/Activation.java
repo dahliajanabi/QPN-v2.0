@@ -265,6 +265,8 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.Throughput)
 			Throughput();
+		if (Operation == TransitionOperation.exits)
+			exits();
 	}
 
 	private void Throughput() throws CloneNotSupportedException {
@@ -281,6 +283,45 @@ public class Activation implements Serializable {
 		}
 		System.out.println("Throughput = "+ Parent.Parent.Throughput);
 		Parent.Parent.StopFlag = true;
+	}
+	
+	private void exits() throws CloneNotSupportedException {
+		//Betas are all zeros, values are in Alpha which is 1 everywhere!!!
+		PetriObject input1 = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+
+	
+		double [] e = new double [8];
+		//Betas are all zeros, values are in Alpha which is 1 everywhere!!!
+		//e11
+				e[0] = result.Value.V.QBits.get(2).Alpha.Real + result.Value.V.QBits.get(19).Alpha.Real;
+		//e14
+				e[1] = result.Value.V.QBits.get(1).Alpha.Real + result.Value.V.QBits.get(18).Alpha.Real;
+		//e23
+				e[2] = result.Value.V.QBits.get(4).Alpha.Real + result.Value.V.QBits.get(21).Alpha.Real;
+		//e24
+				e[3] = result.Value.V.QBits.get(5).Alpha.Real + result.Value.V.QBits.get(22).Alpha.Real;
+		//e31
+				e[4] = result.Value.V.QBits.get(10).Alpha.Real + result.Value.V.QBits.get(27).Alpha.Real;
+		//e32
+				e[5] = result.Value.V.QBits.get(11).Alpha.Real + result.Value.V.QBits.get(24).Alpha.Real;
+		//e42
+				e[6] = result.Value.V.QBits.get(15).Alpha.Real + result.Value.V.QBits.get(28).Alpha.Real;
+		//e43
+				e[7] = result.Value.V.QBits.get(12).Alpha.Real + result.Value.V.QBits.get(29).Alpha.Real;
+		
+		System.out.println("e11 = "+ e[0] + "\n" +
+				"e14 = "+ e[1] + "\n" +
+				"e23 = "+ e[2] + "\n" +
+				"e24 = "+ e[3] + "\n" +
+				"e31 = "+ e[4] + "\n" +
+				"e32 = "+ e[5] + "\n" +
+				"e342 = "+ e[6] + "\n" +
+				"e43 = "+ e[7] + "\n");
+		
 	}
 
 	private void SplitIndexesQbit() throws CloneNotSupportedException {
@@ -736,8 +777,8 @@ public class Activation implements Serializable {
 				sum.Imaginary += cv2.Imaginary;
 				// -----------------------------------------------------------
 				ComplexValue cv3 = QBitCollection.get(x).Beta;
-				real = A.Value.Matrix[i][0] * cv3.Real;
-				imaginary = A.Value.Matrix[i][0] * cv3.Imaginary;
+				real = A.Value.Matrix[i][1] * cv3.Real;
+				imaginary = A.Value.Matrix[i][1] * cv3.Imaginary;
 				ComplexValue cv4 = new ComplexValue(real, imaginary);
 				sum.Real += cv4.Real;
 				sum.Imaginary += cv4.Imaginary;
@@ -830,8 +871,8 @@ public class Activation implements Serializable {
 				sum.Imaginary += cv2.Imaginary;
 				// -----------------------------------------------------------
 				ComplexValue cv3 = QBitCollection.get(x).Beta;
-				real = A.Value.Matrix[i][0].Value * cv3.Real;
-				imaginary = A.Value.Matrix[i][0].Value * cv3.Imaginary;
+				real = A.Value.Matrix[i][1].Value * cv3.Real;
+				imaginary = A.Value.Matrix[i][1].Value * cv3.Imaginary;
 				ComplexValue cv4 = new ComplexValue(real, imaginary);
 				sum.Real += cv4.Real;
 				sum.Imaginary += cv4.Imaginary;
