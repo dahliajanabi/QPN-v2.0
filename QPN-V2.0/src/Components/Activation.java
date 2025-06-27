@@ -9,18 +9,20 @@ import java.util.Iterator;
 
 import com.google.gson.Gson;
 
-import DataObjects.DataUnitaryMatrix;
 import DataObjects.DataUnitaryThetaMatrix;
+import DataObjects.DataDigital;
 import DataObjects.DataQplace;
 import DataObjects.DataTheta;
 import DataOnly.UnitaryMatrix;
 import DataOnly.Vvector;
 import DataOnly.ComplexValue;
+import DataOnly.Digital;
 import DataOnly.Qplace;
 import DataOnly.Psivector;
 import DataOnly.QBit;
 import DataOnly.Theta;
 import DataObjects.DataTransfer;
+import DataObjects.DataUnitaryMatrix;
 import Enumerations.QplacePrintSetting;
 import Enumerations.TransitionOperation;
 import Enumerations.UnitaryThetaMatrixValueFuncType;
@@ -157,6 +159,16 @@ public class Activation implements Serializable {
 		this.Operation = Condition;
 	}
 
+	public Activation(PetriTransition Parent, ArrayList<String> InputPlaceNames, ArrayList<String> ConstantValues,
+			TransitionOperation Condition, ArrayList<String> OutputPlaceNames) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.InputPlaceNames = InputPlaceNames;
+		this.ConstantValues = ConstantValues;
+		this.OutputPlaceNames = OutputPlaceNames;
+		this.Operation = Condition;
+	}
+
 	public Activation(CustomUnitaryMatrixParameter CustomUnitaryMatrixParameter) {
 		util = new Functions();
 		this.Parent = CustomUnitaryMatrixParameter.Parent;
@@ -254,6 +266,9 @@ public class Activation implements Serializable {
 		if (Operation == TransitionOperation.LaneSplit)
 			LaneSplit();
 
+		if (Operation == TransitionOperation.PsiLaneSplit)
+			PsiLaneSplit();
+
 		if (Operation == TransitionOperation.IntersectionSplit)
 			IntersectionSplit();
 
@@ -265,6 +280,7 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.Throughput)
 			Throughput();
+
 		if (Operation == TransitionOperation.exits)
 			exits();
 	}
@@ -281,47 +297,41 @@ public class Activation implements Serializable {
 		for (int i = 0; i < result.Value.V.Size; i++) {
 			Parent.Parent.Throughput += result.Value.V.QBits.get(i).Alpha.Real;
 		}
-		System.out.println("Throughput = "+ Parent.Parent.Throughput);
+		System.out.println("Throughput = " + Parent.Parent.Throughput);
 		Parent.Parent.StopFlag = true;
 	}
-	
+
 	private void exits() throws CloneNotSupportedException {
-		//Betas are all zeros, values are in Alpha which is 1 everywhere!!!
+		// Betas are all zeros, values are in Alpha which is 1 everywhere!!!
 		PetriObject input1 = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
 		if (input1 == null && !(input1 instanceof DataQplace)) {
 			return;
 		}
 		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
 
-	
-		double [] e = new double [8];
-		//Betas are all zeros, values are in Alpha which is 1 everywhere!!!
-		//e11
-				e[0] = result.Value.V.QBits.get(2).Alpha.Real + result.Value.V.QBits.get(19).Alpha.Real;
-		//e14
-				e[1] = result.Value.V.QBits.get(1).Alpha.Real + result.Value.V.QBits.get(18).Alpha.Real;
-		//e23
-				e[2] = result.Value.V.QBits.get(4).Alpha.Real + result.Value.V.QBits.get(21).Alpha.Real;
-		//e24
-				e[3] = result.Value.V.QBits.get(5).Alpha.Real + result.Value.V.QBits.get(22).Alpha.Real;
-		//e31
-				e[4] = result.Value.V.QBits.get(10).Alpha.Real + result.Value.V.QBits.get(27).Alpha.Real;
-		//e32
-				e[5] = result.Value.V.QBits.get(11).Alpha.Real + result.Value.V.QBits.get(24).Alpha.Real;
-		//e42
-				e[6] = result.Value.V.QBits.get(15).Alpha.Real + result.Value.V.QBits.get(28).Alpha.Real;
-		//e43
-				e[7] = result.Value.V.QBits.get(12).Alpha.Real + result.Value.V.QBits.get(29).Alpha.Real;
-		
-		System.out.println("e11 = "+ e[0] + "\n" +
-				"e14 = "+ e[1] + "\n" +
-				"e23 = "+ e[2] + "\n" +
-				"e24 = "+ e[3] + "\n" +
-				"e31 = "+ e[4] + "\n" +
-				"e32 = "+ e[5] + "\n" +
-				"e342 = "+ e[6] + "\n" +
-				"e43 = "+ e[7] + "\n");
-		
+		double[] e = new double[8];
+		// Betas are all zeros, values are in Alpha which is 1 everywhere!!!
+		// e11
+		e[0] = result.Value.V.QBits.get(2).Alpha.Real + result.Value.V.QBits.get(19).Alpha.Real;
+		// e14
+		e[1] = result.Value.V.QBits.get(1).Alpha.Real + result.Value.V.QBits.get(18).Alpha.Real;
+		// e23
+		e[2] = result.Value.V.QBits.get(4).Alpha.Real + result.Value.V.QBits.get(21).Alpha.Real;
+		// e24
+		e[3] = result.Value.V.QBits.get(5).Alpha.Real + result.Value.V.QBits.get(22).Alpha.Real;
+		// e31
+		e[4] = result.Value.V.QBits.get(10).Alpha.Real + result.Value.V.QBits.get(27).Alpha.Real;
+		// e32
+		e[5] = result.Value.V.QBits.get(11).Alpha.Real + result.Value.V.QBits.get(24).Alpha.Real;
+		// e42
+		e[6] = result.Value.V.QBits.get(15).Alpha.Real + result.Value.V.QBits.get(28).Alpha.Real;
+		// e43
+		e[7] = result.Value.V.QBits.get(12).Alpha.Real + result.Value.V.QBits.get(29).Alpha.Real;
+
+		System.out.println("e11 = " + e[0] + "\n" + "e14 = " + e[1] + "\n" + "e23 = " + e[2] + "\n" + "e24 = " + e[3]
+				+ "\n" + "e31 = " + e[4] + "\n" + "e32 = " + e[5] + "\n" + "e342 = " + e[6] + "\n" + "e43 = " + e[7]
+				+ "\n");
+
 	}
 
 	private void SplitIndexesQbit() throws CloneNotSupportedException {
@@ -1116,4 +1126,101 @@ public class Activation implements Serializable {
 		result.SetValue(new Qplace(new Vvector(1, q), QplacePrintSetting.Both));
 		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
 	}
+
+	private void PsiLaneSplit() throws CloneNotSupportedException {
+
+		PetriObject input = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
+		if (input == null && !(input instanceof DataQplace)) {
+			return;
+		}
+		
+		PetriObject inputZero = util.GetFromListByName(InputPlaceNames.get(1), Parent.TempMarking);
+		if (inputZero == null && !(inputZero instanceof DataQplace)) {
+			return;
+		}
+		
+		PetriObject splitPlace = util.GetFromListByName(ConstantValues.get(0), Parent.Parent.ConstantPlaceList);
+		if (splitPlace == null && !(splitPlace instanceof DataDigital)) {
+			return;
+		}
+		DataDigital sp = (DataDigital) splitPlace;
+
+		PetriObject uniMatrix1 = util.GetFromListByName(ConstantValues.get(1), Parent.Parent.ConstantPlaceList);
+		if (uniMatrix1 == null && !(uniMatrix1 instanceof DataUnitaryMatrix)) {
+			return;
+		}
+		DataUnitaryMatrix um1 = (DataUnitaryMatrix) uniMatrix1;
+
+		PetriObject uniMatrix2 = util.GetFromListByName(ConstantValues.get(2), Parent.Parent.ConstantPlaceList);
+		if (uniMatrix2 == null && !(uniMatrix2 instanceof DataUnitaryMatrix)) {
+			return;
+		}
+		DataUnitaryMatrix um2 = (DataUnitaryMatrix) uniMatrix2;
+
+		DataQplace result = (DataQplace) ((DataQplace) input).clone();
+		DataQplace resultZero = (DataQplace) ((DataQplace) inputZero).clone();
+		
+		Qplace resC = (Qplace) result.GetValue();
+		Qplace resZeroC = (Qplace) resultZero.GetValue();
+		Qplace resD1 = new Qplace(new Psivector(resC.Psi.Size, resC.Psi.ComplexArray), resC.PrintingSetting);
+		Qplace resD2 = new Qplace(new Psivector(resZeroC.Psi.Size, resZeroC.Psi.ComplexArray), resZeroC.PrintingSetting);
+
+		int numberOfCars = 0;
+		for (int i = 0; i < resC.Psi.ComplexArray.size(); i++) {
+			if (resC.Psi.ComplexArray.get(i).Real > 0) {
+				numberOfCars = i;
+				break;
+			}
+		}
+
+		if (numberOfCars == 0) {
+			return;
+		}
+
+		int limit1 = numberOfCars - sp.Value.DigitalPlace;
+
+		while (limit1 > 0) {
+			for (int i = 0; i < um1.Value.Matrix.length; i++) {
+				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
+
+				for (int j = 0; j < um1.Value.Matrix[0].length; j++) {
+					ComplexValue cv1 = resC.Psi.ComplexArray.get(j);
+					Float real = um1.Value.Matrix[i][j] * cv1.Real;
+					Float imaginary = um1.Value.Matrix[i][j] * cv1.Imaginary;
+					ComplexValue cv2 = new ComplexValue(real, imaginary);
+					sum.Real += cv2.Real;
+					sum.Imaginary += cv2.Imaginary;
+				}
+				resD1.Psi.ComplexArray.set(i, sum);
+			}
+			limit1--;
+		}
+		result.SetName(OutputPlaceNames.get(0));
+		result.SetValue(resD1);
+		util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result);
+		
+		
+		int limit2 = sp.Value.DigitalPlace;
+
+		while (limit2 > 0) {
+			for (int i = 0; i < um2.Value.Matrix.length; i++) {
+				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
+
+				for (int j = 0; j < um2.Value.Matrix[0].length; j++) {
+					ComplexValue cv1 = resZeroC.Psi.ComplexArray.get(j);
+					Float real = um2.Value.Matrix[i][j] * cv1.Real;
+					Float imaginary = um2.Value.Matrix[i][j] * cv1.Imaginary;
+					ComplexValue cv2 = new ComplexValue(real, imaginary);
+					sum.Real += cv2.Real;
+					sum.Imaginary += cv2.Imaginary;
+				}
+				resD2.Psi.ComplexArray.set(i, sum);
+			}
+			limit2--;
+		}
+		result.SetName(OutputPlaceNames.get(1));
+		result.SetValue(resD2);
+		util.SetToListByName(OutputPlaceNames.get(1), Parent.Parent.PlaceList, result);
+	}
+	
 }

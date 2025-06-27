@@ -37,7 +37,8 @@ public class Lane_4 {
 		PetriNet pn = new PetriNet();
 		pn.PetriNetName = "Lane_4";
 		pn.NetworkPort = 4084;
-
+		float Ro = 1 / (float) Math.sqrt(2);
+		
 		// -------------Unitary Matrixes----------------
 
 		DataUnitaryThetaMatrix constantValue1 = new DataUnitaryThetaMatrix();
@@ -74,19 +75,17 @@ public class Lane_4 {
 
 		DataQplace p1 = new DataQplace(); // x
 		p1.SetName("p1");
-		p1.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p1.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.PlaceList.add(p1);
 
 		DataQplace p_i1 = new DataQplace(); // ui
 		p_i1.SetName("p_i1");
-		p_i1.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
-				QplacePrintSetting.Both));
 		pn.PlaceList.add(p_i1);
 
 		DataQplace p_csi = new DataQplace(); // split place for ui
 		p_csi.SetName("p_csi1");
-		p_csi.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p_csi.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.PlaceList.add(p_csi);
 
@@ -102,13 +101,11 @@ public class Lane_4 {
 
 		DataQplace p_i2 = new DataQplace(); // ui_2
 		p_i2.SetName("p_i2");
-		p_i2.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
-				QplacePrintSetting.Both));
 		pn.PlaceList.add(p_i2);
 
 		DataQplace p_csi2 = new DataQplace(); // split place for ui
 		p_csi2.SetName("p_csi2");
-		p_csi2.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p_csi2.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.ConstantPlaceList.add(p_csi2);
 
@@ -145,7 +142,7 @@ public class Lane_4 {
 
 		DataQplace p_c = new DataQplace(); // gamma
 		p_c.SetName("p_c");
-		p_c.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p_c.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.ConstantPlaceList.add(p_c);
 
@@ -166,6 +163,12 @@ public class Lane_4 {
 		p_cm.SetName("p_cm");
 		p_cm.SetValue(new Digital(1));
 		pn.PlaceList.add(p_cm);
+		
+		//Lane split output channels
+				DataTransfer p_r1_o = new DataTransfer();
+				p_r1_o.SetName("p_r1_o");
+				p_r1_o.Value = new TransferOperation("localhost", "3083", "p_i1");
+				pn.PlaceList.add(p_r1_o); 
 
 		// -------------------Transitions----------------------
 
@@ -322,6 +325,24 @@ public class Lane_4 {
 		t4.GuardMappingList.add(grdT4);
 
 		pn.Transitions.add(t4);
+		
+		// toutLanes ------------------------------------------------
+				PetriTransition tout = new PetriTransition(pn);
+				tout.TransitionName = "tout";
+				tout.InputPlaceName.add("p_r1");
+				tout.InputPlaceName.add("p_f2");
+
+				Condition ToutCt1 = new Condition(tout, "p_r1", TransitionCondition.NotNull);
+				Condition ToutCt2 = new Condition (tout, "p_f2", TransitionCondition.NotNull);
+				ToutCt1.SetNextCondition(LogicConnector.AND, ToutCt2);
+
+				GuardMapping grdTout = new GuardMapping();
+				grdTout.condition = ToutCt1;
+				grdTout.Activations.add(new Activation(tout, "p_r1", TransitionOperation.SendOverNetwork, "p_r1_o"));
+
+				tout.GuardMappingList.add(grdTout);
+
+				pn.Transitions.add(tout);
 
 		// Start PN----------------------------------------------
 

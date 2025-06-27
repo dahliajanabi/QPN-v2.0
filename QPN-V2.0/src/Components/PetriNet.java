@@ -219,12 +219,12 @@ public class PetriNet implements PetriObject, Runnable, Cloneable, Serializable 
 		}
 	}
 
-	public void PrintThis(String text, Exception e) {
-//		m_lDataLoadFinished.onDataLoadFinishedListener(text);
-//		if (e != null) {
-//			e.printStackTrace();
-//		}
-//		System.out.println(text);
+	public void PrintThis(String text, Exception e) {   //for fast execution no printing comment this method only
+		m_lDataLoadFinished.onDataLoadFinishedListener(text);
+		if (e != null) {
+			e.printStackTrace();
+		}
+		System.out.println(text);
 	}
 
 	@Override

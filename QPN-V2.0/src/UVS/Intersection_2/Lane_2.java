@@ -37,6 +37,7 @@ public class Lane_2 {
 		PetriNet pn = new PetriNet();
 		pn.PetriNetName = "Lane_2";
 		pn.NetworkPort = 2082;
+		float Ro = 1 / (float) Math.sqrt(2);
 
 		// -------------Unitary Matrixes----------------
 
@@ -74,19 +75,17 @@ public class Lane_2 {
 
 		DataQplace p1 = new DataQplace(); // x
 		p1.SetName("p1");
-		p1.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p1.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.PlaceList.add(p1);
 
 		DataQplace p_i1 = new DataQplace(); // ui
 		p_i1.SetName("p_i1");
-		p_i1.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
-				QplacePrintSetting.Both));
 		pn.PlaceList.add(p_i1);
 
 		DataQplace p_csi = new DataQplace(); // split place for ui
 		p_csi.SetName("p_csi1");
-		p_csi.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p_csi.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.PlaceList.add(p_csi);
 
@@ -102,13 +101,11 @@ public class Lane_2 {
 
 		DataQplace p_i2 = new DataQplace(); // ui_2
 		p_i2.SetName("p_i2");
-		p_i2.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
-				QplacePrintSetting.Both));
 		pn.PlaceList.add(p_i2);
 
 		DataQplace p_csi2 = new DataQplace(); // split place for ui
 		p_csi2.SetName("p_csi2");
-		p_csi2.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p_csi2.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.ConstantPlaceList.add(p_csi2);
 
@@ -145,7 +142,7 @@ public class Lane_2 {
 
 		DataQplace p_c = new DataQplace(); // gamma
 		p_c.SetName("p_c");
-		p_c.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(1.0f, 0.0f), new ComplexValue(0.0f, 0.0f))),
+		p_c.SetValue(new Qplace(new Vvector(1, new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))),
 				QplacePrintSetting.Both));
 		pn.ConstantPlaceList.add(p_c);
 
