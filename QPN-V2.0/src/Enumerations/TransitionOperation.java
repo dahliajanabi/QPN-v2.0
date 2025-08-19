@@ -23,5 +23,7 @@ public enum TransitionOperation implements Serializable{
 	WriteToFile,
 	Throughput,
 	exits,
-	PsiLaneSplit
+	PsiLaneSplit,
+	UnitaryMatrixWithLoop,
+	PsiIntersectionSplit
 }

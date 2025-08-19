@@ -482,21 +482,21 @@ public class UVS {
 		DataQplace p_cs = new DataQplace(); // split place
 		p_cs.SetName("p_cs");
 		p_cs.SetValue(new Qplace(new Vvector(16, new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f)),
-				new QBit(new ComplexValue(Ro, 0.0f), new ComplexValue(Ro, 0.0f))), QplacePrintSetting.Both));
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro)),
+				new QBit(new ComplexValue(0.0f, Ro), new ComplexValue(0.0f, Ro))), QplacePrintSetting.Both));
 		pn.ConstantPlaceList.add(p_cs);
 
 		

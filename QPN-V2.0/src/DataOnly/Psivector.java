@@ -40,6 +40,6 @@ public class Psivector implements Cloneable, Serializable {
 				temp1.add(c.toString(PrintImaginary));
 		}
 
-		return "(" + String.join(",", temp1) + ")";
+		return "(" + String.join(" , ", temp1) + ")";
 	}
 };

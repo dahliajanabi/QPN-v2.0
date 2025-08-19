@@ -283,6 +283,13 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.exits)
 			exits();
+
+		if (Operation == TransitionOperation.UnitaryMatrixWithLoop)
+			UnitaryMatrixWithLoop();
+
+		if (Operation == TransitionOperation.PsiIntersectionSplit)
+			PsiIntersectionSplit();
+
 	}
 
 	private void Throughput() throws CloneNotSupportedException {
@@ -295,7 +302,7 @@ public class Activation implements Serializable {
 		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
 
 		for (int i = 0; i < result.Value.V.Size; i++) {
-			Parent.Parent.Throughput += result.Value.V.QBits.get(i).Alpha.Real;
+			Parent.Parent.Throughput += result.Value.V.QBits.get(i).Beta.Real;
 		}
 		System.out.println("Throughput = " + Parent.Parent.Throughput);
 		Parent.Parent.StopFlag = true;
@@ -1133,12 +1140,12 @@ public class Activation implements Serializable {
 		if (input == null && !(input instanceof DataQplace)) {
 			return;
 		}
-		
+
 		PetriObject inputZero = util.GetFromListByName(InputPlaceNames.get(1), Parent.TempMarking);
 		if (inputZero == null && !(inputZero instanceof DataQplace)) {
 			return;
 		}
-		
+
 		PetriObject splitPlace = util.GetFromListByName(ConstantValues.get(0), Parent.Parent.ConstantPlaceList);
 		if (splitPlace == null && !(splitPlace instanceof DataDigital)) {
 			return;
@@ -1159,11 +1166,12 @@ public class Activation implements Serializable {
 
 		DataQplace result = (DataQplace) ((DataQplace) input).clone();
 		DataQplace resultZero = (DataQplace) ((DataQplace) inputZero).clone();
-		
+
 		Qplace resC = (Qplace) result.GetValue();
 		Qplace resZeroC = (Qplace) resultZero.GetValue();
 		Qplace resD1 = new Qplace(new Psivector(resC.Psi.Size, resC.Psi.ComplexArray), resC.PrintingSetting);
-		Qplace resD2 = new Qplace(new Psivector(resZeroC.Psi.Size, resZeroC.Psi.ComplexArray), resZeroC.PrintingSetting);
+		Qplace resD2 = new Qplace(new Psivector(resZeroC.Psi.Size, resZeroC.Psi.ComplexArray),
+				resZeroC.PrintingSetting);
 
 		int numberOfCars = 0;
 		for (int i = 0; i < resC.Psi.ComplexArray.size(); i++) {
@@ -1178,10 +1186,12 @@ public class Activation implements Serializable {
 		}
 
 		int limit1 = numberOfCars - sp.Value.DigitalPlace;
+		int limit2 = limit1;
 
 		while (limit1 > 0) {
+
 			for (int i = 0; i < um1.Value.Matrix.length; i++) {
-				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
+				ComplexValue sum = new ComplexValue(0.0f, 0.0f);
 
 				for (int j = 0; j < um1.Value.Matrix[0].length; j++) {
 					ComplexValue cv1 = resC.Psi.ComplexArray.get(j);
@@ -1194,17 +1204,18 @@ public class Activation implements Serializable {
 				resD1.Psi.ComplexArray.set(i, sum);
 			}
 			limit1--;
+			
+			resC.Psi.ComplexArray.clear();
+			resC.Psi.ComplexArray.addAll(resD1.Psi.ComplexArray);
 		}
 		result.SetName(OutputPlaceNames.get(0));
 		result.SetValue(resD1);
 		util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result);
-		
-		
-		int limit2 = sp.Value.DigitalPlace;
 
+		DataQplace result2=(DataQplace) ((DataQplace) input).clone(); 
 		while (limit2 > 0) {
 			for (int i = 0; i < um2.Value.Matrix.length; i++) {
-				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
+				ComplexValue sum = new ComplexValue(0.0f, 0.0f);
 
 				for (int j = 0; j < um2.Value.Matrix[0].length; j++) {
 					ComplexValue cv1 = resZeroC.Psi.ComplexArray.get(j);
@@ -1217,10 +1228,82 @@ public class Activation implements Serializable {
 				resD2.Psi.ComplexArray.set(i, sum);
 			}
 			limit2--;
+			resZeroC.Psi.ComplexArray.clear();
+			resZeroC.Psi.ComplexArray.addAll( resD2.Psi.ComplexArray);
 		}
-		result.SetName(OutputPlaceNames.get(1));
-		result.SetValue(resD2);
-		util.SetToListByName(OutputPlaceNames.get(1), Parent.Parent.PlaceList, result);
+		result2.SetName(OutputPlaceNames.get(1));
+		result2.SetValue(resD2);
+		util.SetToListByName(OutputPlaceNames.get(1), Parent.Parent.PlaceList, result2);
+
 	}
-	
+
+	private void UnitaryMatrixWithLoop() throws CloneNotSupportedException {
+
+		PetriObject input = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
+		if (input == null && !(input instanceof DataQplace)) {
+			return;
+		}
+
+		PetriObject constantValue = util.GetFromListByName(ConstantValues.get(0), Parent.Parent.ConstantPlaceList);
+		if (constantValue == null && !(constantValue instanceof DataUnitaryMatrix)) {
+			return;
+		}
+
+		PetriObject constantValue2 = util.GetFromListByName(ConstantValues.get(1), Parent.TempMarking);
+		if (constantValue2 == null && !(constantValue instanceof DataQplace)) {
+			return;
+		}
+
+		DataUnitaryMatrix A = (DataUnitaryMatrix) constantValue;
+		DataQplace Limit = (DataQplace) constantValue2;
+		DataQplace result = (DataQplace) ((DataQplace) input).clone();
+		Qplace resC = (Qplace) result.GetValue();
+		Qplace resD = new Qplace(new Psivector(resC.Psi.Size, resC.Psi.ComplexArray), resC.PrintingSetting);
+		Qplace lmt = (Qplace) Limit.GetValue();
+		
+		int numberOfCars = 0;
+		for (int i = 0; i < lmt.Psi.ComplexArray.size(); i++) {
+			if (lmt.Psi.ComplexArray.get(i).Real > 0) {
+				numberOfCars = i;
+				break;
+			}
+		}
+
+		if (numberOfCars == 0) {
+			return;
+		}
+		int limit = numberOfCars;
+		while (limit > 0) {
+
+			for (int i = 0; i < A.Value.Matrix.length; i++) {
+				ComplexValue sum = new ComplexValue(0.0f, 0.0f);
+
+				for (int j = 0; j < A.Value.Matrix[0].length; j++) {
+					ComplexValue cv1 = resC.Psi.ComplexArray.get(j);
+					Float real = A.Value.Matrix[i][j] * cv1.Real;
+					Float imaginary = A.Value.Matrix[i][j] * cv1.Imaginary;
+					ComplexValue cv2 = new ComplexValue(real, imaginary);
+					sum.Real += cv2.Real;
+					sum.Imaginary += cv2.Imaginary;
+				}
+				resD.Psi.ComplexArray.set(i, sum);
+			}
+			limit--;
+			resC.Psi.ComplexArray.clear();
+			resC.Psi.ComplexArray.addAll(resD.Psi.ComplexArray);
+		}
+		result.SetName(OutputPlaceName);
+		result.SetValue(resD);
+
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
+
+	}
+
+	private void PsiIntersectionSplit() throws CloneNotSupportedException {
+		// have 4 split places, each specify the capacity for each output lane
+		// the cars first leave from the 1st output, the remaining ones from the second
+		// and so on
+		// sets the number of cars for output 1 at Pc2, and at Pc3 for output 2
+
+	}
 }
