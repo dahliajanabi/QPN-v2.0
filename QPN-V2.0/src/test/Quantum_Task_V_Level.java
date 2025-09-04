@@ -192,9 +192,9 @@ public class Quantum_Task_V_Level {
 		t2.InputPlaceName.add("p2");
 		//t2.InputPlaceName.add("p_c2");
 
-		Condition T2Ct1 = new Condition(t1, "p2", TransitionCondition.NotNull);
-//		Condition T2Ct2 = new Condition(t1, "p_c2", TransitionCondition.NotNull);
-//		T2Ct1.SetNextCondition(LogicConnector.AND, T1Ct2);
+		Condition T2Ct1 = new Condition(t2, "p2", TransitionCondition.NotNull);
+//		Condition T2Ct2 = new Condition(t2, "p_c2", TransitionCondition.NotNull);
+//		T2Ct1.SetNextCondition(LogicConnector.AND, T2Ct2);
 
 		GuardMapping grdT2 = new GuardMapping();
 		grdT2.condition = T2Ct1;
