@@ -23,7 +23,7 @@ public class Qplace implements Cloneable, Serializable {
 
 	public Qplace(Vvector V, QplacePrintSetting PrintingSetting) {
 		this.V = V;
-		//this.Psi = this.V.GetPsi();
+		this.Psi = this.V.GetPsi();
 		this.PrintingSetting = PrintingSetting;
 	}
 	
@@ -36,8 +36,8 @@ public class Qplace implements Cloneable, Serializable {
 	public String toString() {
 		switch (PrintingSetting) {
 		case Both:
-			return "V:" + V.toString(true);
-			//return "Psi:" + Psi.toString(true) + ", V:" + V.toString(true);	
+			//return "V:" + V.toString(true);
+			return "Psi:" + Psi.toString(true) + ", V:" + V.toString(true);	
 		case PsiOnly:
 			return "Psi:" + Psi.toString(true);
 		case VOnly:
