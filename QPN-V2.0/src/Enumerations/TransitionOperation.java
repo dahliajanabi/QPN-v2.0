@@ -25,5 +25,7 @@ public enum TransitionOperation implements Serializable{
 	exits,
 	PsiLaneSplit,
 	UnitaryMatrixWithLoop,
-	PsiIntersectionSplit
+	PsiIntersectionSplit,
+	ThetaUnitaryMatrixPsi,
+	FuzzyAND
 }

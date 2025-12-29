@@ -279,5 +279,10 @@ public class Functions implements Serializable {
 		return new ComplexValue((float) (newMagnitude * Math.cos(newAngle)),
 				(float) (newMagnitude * Math.sin(newAngle)));
 	}
+	
+	public ComplexValue Prod(ComplexValue v1, ComplexValue v2) {
+		ComplexValue r = new ComplexValue((v1.Real * v2.Real) - (v1.Imaginary * v2.Imaginary), (v1.Real * v2.Imaginary) + (v1.Imaginary*v2.Real));
+		return r;
+	}
 
 }

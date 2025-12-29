@@ -30,6 +30,16 @@ public class Psivector implements Cloneable, Serializable {
 			ComplexArray.add(complexValue);
 		}
 	}
+	
+	public Psivector(Psivector psivector) {
+		this.ComplexArray = psivector.ComplexArray;
+		this.Size = psivector.Size;
+	}
+	
+	public Psivector(ArrayList<ComplexValue> ComplexArray) {
+		this.ComplexArray = ComplexArray;
+		this.Size = ComplexArray.size();
+	}
 
 	public String toString(boolean PrintImaginary) {
 		ArrayList<String> temp1 = new ArrayList<String>();

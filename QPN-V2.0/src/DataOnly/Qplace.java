@@ -37,7 +37,7 @@ public class Qplace implements Cloneable, Serializable {
 		switch (PrintingSetting) {
 		case Both:
 			//return "V:" + V.toString(true);
-			return "Psi:" + Psi.toString(true) + ", V:" + V.toString(true);	
+			return  "V:" + V.toString(true)+ ", Psi:" + Psi.toString(true) ;	
 		case PsiOnly:
 			return "Psi:" + Psi.toString(true);
 		case VOnly:

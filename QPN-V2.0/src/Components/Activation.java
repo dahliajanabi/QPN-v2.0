@@ -251,6 +251,9 @@ public class Activation implements Serializable {
 		if (Operation == TransitionOperation.ThetaUnitaryMatrixV)
 			ThetaUnitaryMatrixV();
 
+		if (Operation == TransitionOperation.ThetaUnitaryMatrixPsi)
+			ThetaUnitaryMatrixPsi();
+
 		if (Operation == TransitionOperation.SplitQbit)
 			SplitQbit();
 
@@ -289,7 +292,37 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.PsiIntersectionSplit)
 			PsiIntersectionSplit();
+		
+		if (Operation == TransitionOperation.FuzzyAND)
+			FuzzyAND();
 
+	}
+
+	private void FuzzyAND() throws CloneNotSupportedException {
+		PetriObject input1 = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+		
+		PetriObject input2 = util.GetFromListByName(InputPlaceNames.get(1), Parent.TempMarking);
+		if (input2 == null && !(input2 instanceof DataQplace)) {
+			return;
+		}
+
+		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
+		DataQplace INPUT2 = (DataQplace) ((DataQplace) input2).clone();
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+		//Qplace resC = (Qplace) result.GetValue();
+		Qplace resD = new Qplace(new Vvector(INPUT1.Value.V.Size, INPUT1.Value.V.QBits),INPUT1.Value.PrintingSetting);
+	
+		
+		resD.V.QBits.get(0).Beta = util.Prod((INPUT1.Value.V.QBits.get(0).Beta),(INPUT2.Value.V.QBits.get(0).Beta));
+		
+		result.SetName(OutputPlaceName);
+		result.SetValue(resD);
+
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
+		
 	}
 
 	private void Throughput() throws CloneNotSupportedException {
@@ -905,6 +938,104 @@ public class Activation implements Serializable {
 		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
 	}
 
+	private void ThetaUnitaryMatrixPsi() throws CloneNotSupportedException {
+
+		PetriObject psi = util.GetFromListByName(ActivationParameters.get(0).QbitInput, Parent.TempMarking);
+		if (psi == null && !(psi instanceof DataQplace)) {
+			throw new Error("psi is not DataQplace");
+		}
+		DataQplace psi_DataQplace = (DataQplace) psi;
+		// extract qbits in an ordered list
+//				ArrayList<QBit> QBitCollection = new ArrayList<>();
+//				for (int i = 0; i < InputPlaceNames.size(); i++) {
+//					PetriObject input = util.GetFromListByName(InputPlaceNames.get(i), Parent.TempMarking);
+//					if (input == null && !(input instanceof DataQplace)) {
+//						continue;
+//					}
+//					QBitCollection.addAll(((DataQplace) input).Value.V.QBits);
+//				}
+		// result qplace that collect all the qbits after the operation
+		DataQplace result = new DataQplace();
+		Psivector Psi= new Psivector(psi_DataQplace.Value.Psi.Size,new ArrayList<ComplexValue>());
+		result.Value= new Qplace(Psi,  QplacePrintSetting.PsiOnly);
+		// ArrayList<QBit> QBitResultCollection = new ArrayList<>();
+
+		// perform operation with matrixes (product)
+		for (int x = 0; x < psi_DataQplace.Value.Psi.Size; x++) {
+
+			PetriObject constantValue = util.GetFromListByName(ConstantValues.get(x), Parent.Parent.ConstantPlaceList);
+			if (constantValue == null && !(constantValue instanceof DataUnitaryThetaMatrix)) {
+				throw new Error("Did not find the corresponding unitary matrix");
+			}
+
+			DataUnitaryThetaMatrix A = (DataUnitaryThetaMatrix) constantValue;
+
+			for (int i = 0; i < A.Value.Matrix[0].length; i++)
+				for (int j = 0; j < A.Value.Matrix[1].length; j++) {
+
+					if (A.Value.Matrix[i][j].Func != UnitaryThetaMatrixValueFuncType.ConstantValue) {
+						PetriObject input2 = util.GetFromListByName(A.Value.Matrix[i][j].ThetaPlaceName,
+								Parent.Parent.ConstantPlaceList);
+						if (input2 == null && !(input2 instanceof DataTheta)) {
+							return;
+						}
+						switch (A.Value.Matrix[i][j].Func) {
+						case Cos:
+							A.Value.Matrix[i][j].Value = (float) Math.cos(((Theta) input2.GetValue()).Angle);
+							break;
+						case Sin:
+							A.Value.Matrix[i][j].Value = (float) Math.sin(((Theta) input2.GetValue()).Angle);
+							break;
+						case Tan:
+							A.Value.Matrix[i][j].Value = (float) Math.tan(((Theta) input2.GetValue()).Angle);
+							break;
+						case MinusCos:
+							A.Value.Matrix[i][j].Value = (float) -Math.cos(((Theta) input2.GetValue()).Angle);
+							break;
+						case MinusSin:
+							A.Value.Matrix[i][j].Value = (float) -Math.sin(((Theta) input2.GetValue()).Angle);
+							break;
+						case MinusTan:
+							A.Value.Matrix[i][j].Value = (float) -Math.tan(((Theta) input2.GetValue()).Angle);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+
+			ArrayList<ComplexValue> sm = new ArrayList<ComplexValue>();
+			for (int i = 0; i < A.Value.Matrix.length; i++) {
+				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
+				ComplexValue cv1 = psi_DataQplace.Value.Psi.ComplexArray.get(x);//QBitCollection.get(x).Alpha;
+				Float real = A.Value.Matrix[i][0].Value * cv1.Real;
+				Float imaginary = A.Value.Matrix[i][0].Value * cv1.Imaginary;
+				ComplexValue cv2 = new ComplexValue(real, imaginary);
+				sum.Real += cv2.Real;
+				sum.Imaginary += cv2.Imaginary;
+				// -----------------------------------------------------------
+//				ComplexValue cv3 = QBitCollection.get(x).Beta;
+//				real = A.Value.Matrix[i][1].Value * cv3.Real;
+//				imaginary = A.Value.Matrix[i][1].Value * cv3.Imaginary;
+//				ComplexValue cv4 = new ComplexValue(real, imaginary);
+//				sum.Real += cv4.Real;
+//				sum.Imaginary += cv4.Imaginary;
+//				sm.add(sum);
+				// resD.Psi.ComplexArray.set(i, sum);
+				result.Value.Psi.ComplexArray.add(sum);
+			}
+			
+			
+			//QBitResultCollection.add(new QBit(sm.get(0), sm.get(1)));
+		}
+
+		result.SetName(OutputPlaceName);
+//		result.SetValue(
+//				new Qplace(new Vvector(QBitResultCollection.size(), QBitResultCollection), QplacePrintSetting.Both));
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
+
+	}
+
 	private void UnitaryMatrix() throws CloneNotSupportedException {
 
 		PetriObject input = util.GetFromListByName(InputPlaceName, Parent.TempMarking);
@@ -1204,7 +1335,7 @@ public class Activation implements Serializable {
 				resD1.Psi.ComplexArray.set(i, sum);
 			}
 			limit1--;
-			
+
 			resC.Psi.ComplexArray.clear();
 			resC.Psi.ComplexArray.addAll(resD1.Psi.ComplexArray);
 		}
@@ -1212,7 +1343,7 @@ public class Activation implements Serializable {
 		result.SetValue(resD1);
 		util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result);
 
-		DataQplace result2=(DataQplace) ((DataQplace) input).clone(); 
+		DataQplace result2 = (DataQplace) ((DataQplace) input).clone();
 		while (limit2 > 0) {
 			for (int i = 0; i < um2.Value.Matrix.length; i++) {
 				ComplexValue sum = new ComplexValue(0.0f, 0.0f);
@@ -1229,7 +1360,7 @@ public class Activation implements Serializable {
 			}
 			limit2--;
 			resZeroC.Psi.ComplexArray.clear();
-			resZeroC.Psi.ComplexArray.addAll( resD2.Psi.ComplexArray);
+			resZeroC.Psi.ComplexArray.addAll(resD2.Psi.ComplexArray);
 		}
 		result2.SetName(OutputPlaceNames.get(1));
 		result2.SetValue(resD2);
@@ -1260,7 +1391,7 @@ public class Activation implements Serializable {
 		Qplace resC = (Qplace) result.GetValue();
 		Qplace resD = new Qplace(new Psivector(resC.Psi.Size, resC.Psi.ComplexArray), resC.PrintingSetting);
 		Qplace lmt = (Qplace) Limit.GetValue();
-		
+
 		int numberOfCars = 0;
 		for (int i = 0; i < lmt.Psi.ComplexArray.size(); i++) {
 			if (lmt.Psi.ComplexArray.get(i).Real > 0) {
