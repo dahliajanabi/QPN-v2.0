@@ -38,10 +38,17 @@ public class FuzzyAND {
 		float v = (float) (Math.sqrt(2)/2);
 		// ---------------------Places----------------------
 
-		DataQplace p1 = new DataQplace(); // v
+//		DataQplace p1 = new DataQplace(); // v 1qbit
+//		p1.SetName("p1");
+//		p1.SetValue(new Qplace(
+//				new Vvector(1, new QBit(new ComplexValue(v, v), new ComplexValue(v,v))),
+//				QplacePrintSetting.Both));
+		
+		DataQplace p1 = new DataQplace(); // v 2 qbit
 		p1.SetName("p1");
 		p1.SetValue(new Qplace(
-				new Vvector(1, new QBit(new ComplexValue(v, v), new ComplexValue(v,v))),
+				new Vvector(2, new QBit(new ComplexValue(v, v), new ComplexValue(v,v)), 
+						new QBit(new ComplexValue(v, v), new ComplexValue(v,v))),
 				QplacePrintSetting.Both));
 
 		pn.PlaceList.add(p1);
@@ -85,8 +92,10 @@ public class FuzzyAND {
 		input0.add("p1");
 		input0.add("p2");
 
+//		grdT0.Activations
+//				.add(new Activation(t0, input0, TransitionOperation.FuzzificationOneQbit, "p3"));
 		grdT0.Activations
-				.add(new Activation(t0, input0, TransitionOperation.FuzzyAND, "p3"));
+		.add(new Activation(t0, input0, TransitionOperation.FuzzificationTwoQbits, "p3"));
 		t0.GuardMappingList.add(grdT0);
 
 		pn.Transitions.add(t0);

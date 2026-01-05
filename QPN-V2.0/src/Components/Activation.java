@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.google.gson.Gson;
 
@@ -20,6 +19,7 @@ import DataOnly.Digital;
 import DataOnly.Qplace;
 import DataOnly.Psivector;
 import DataOnly.QBit;
+import DataOnly.QFLRS;
 import DataOnly.Theta;
 import DataObjects.DataTransfer;
 import DataObjects.DataUnitaryMatrix;
@@ -58,6 +58,7 @@ public class Activation implements Serializable {
 	public String ConstantValueName2;
 	public int QbitIndex = 0;
 	public int SplitRange = 1;
+	public QFLRS QFlrs;
 
 	public Activation(PetriTransition Parent) {
 		util = new Functions();
@@ -157,6 +158,16 @@ public class Activation implements Serializable {
 		this.ConstantValues = ConstantValues;
 		this.OutputPlaceName = OutputPlaceName;
 		this.Operation = Condition;
+	}
+
+	public Activation(PetriTransition Parent, ArrayList<String> InputPlaceNames, QFLRS qflrs,
+			TransitionOperation Condition, ArrayList<String> OutputPlaceNames) {
+		util = new Functions();
+		this.Parent = Parent;
+		this.InputPlaceNames = InputPlaceNames;
+		this.OutputPlaceNames = OutputPlaceNames;
+		this.Operation = Condition;
+		this.QFlrs = qflrs;
 	}
 
 	public Activation(PetriTransition Parent, ArrayList<String> InputPlaceNames, ArrayList<String> ConstantValues,
@@ -292,18 +303,481 @@ public class Activation implements Serializable {
 
 		if (Operation == TransitionOperation.PsiIntersectionSplit)
 			PsiIntersectionSplit();
-		
-		if (Operation == TransitionOperation.FuzzyAND)
-			FuzzyAND();
 
+		if (Operation == TransitionOperation.FuzzificationOneQbit)
+			FuzzyANDOneQbit();
+
+		if (Operation == TransitionOperation.FuzzificationTwoQbits)
+			FuzzyANDTwoQbits();
+
+		if (Operation == TransitionOperation.QFLRS) {
+			if (InputPlaceNames.size() == 1) {
+				QFLRSMethod1Input();
+			} else {
+				QFLRSMethod2Input();
+			}
+		}
 	}
 
-	private void FuzzyAND() throws CloneNotSupportedException {
+	private void QFLRSMethod2Input() throws CloneNotSupportedException {
 		PetriObject input1 = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
 		if (input1 == null && !(input1 instanceof DataQplace)) {
 			return;
 		}
-		
+		PetriObject input2 = util.GetFromListByName(InputPlaceNames.get(1), Parent.TempMarking);
+		if (input2 == null && !(input2 instanceof DataQplace)) {
+			return;
+		}
+
+		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
+		DataQplace INPUT2 = (DataQplace) ((DataQplace) input2).clone();
+
+		double miu1 = INPUT1.Value.V.QBits.get(0).Beta.Real * INPUT1.Value.V.QBits.get(0).Beta.Real;
+		double miu1Bar = INPUT1.Value.V.QBits.get(0).Alpha.Real * INPUT1.Value.V.QBits.get(0).Alpha.Real;
+		double miu2 = INPUT1.Value.V.QBits.get(1).Beta.Real * INPUT1.Value.V.QBits.get(1).Beta.Real;
+		double miu2Bar = INPUT1.Value.V.QBits.get(1).Alpha.Real * INPUT1.Value.V.QBits.get(1).Alpha.Real;
+
+		double m1 = miu1Bar * miu2Bar;
+		double m2 = miu1Bar * miu2;
+		double m3 = miu1 * miu2Bar;
+		double m4 = miu1 * miu2;
+		ArrayList<Double> Ms_1 = new ArrayList<Double>();
+		Ms_1.add(m1);
+		Ms_1.add(m2);
+		Ms_1.add(m3);
+		Ms_1.add(m4);
+
+		if (m1 + m2 + m3 + m4 <0.999 ) {
+			System.out.println("Check completed");
+		} else {
+			System.out.println("ERORR while checking the sum of the Ms<<================");
+			//return;
+		}
+
+		double miu1_2 = INPUT2.Value.V.QBits.get(0).Beta.Real * INPUT2.Value.V.QBits.get(0).Beta.Real;
+		double miu1Bar_2 = INPUT2.Value.V.QBits.get(0).Alpha.Real * INPUT2.Value.V.QBits.get(0).Alpha.Real;
+		double miu2_2 = INPUT2.Value.V.QBits.get(1).Beta.Real * INPUT2.Value.V.QBits.get(1).Beta.Real;
+		double miu2Bar_2 = INPUT2.Value.V.QBits.get(1).Alpha.Real * INPUT2.Value.V.QBits.get(1).Alpha.Real;
+
+		double m1_2 = miu1Bar_2 * miu2Bar_2;
+		double m2_2 = miu1Bar_2 * miu2_2;
+		double m3_2 = miu1_2 * miu2Bar_2;
+		double m4_2 = miu1_2 * miu2_2;
+		ArrayList<Double> Ms_2 = new ArrayList<Double>();
+		Ms_2.add(m1_2);
+		Ms_2.add(m2_2);
+		Ms_2.add(m3_2);
+		Ms_2.add(m4_2);
+
+		if (m1_2 + m2_2 + m3_2 + m4_2 <0.999 ) {
+			System.out.println("Check_2 completed");
+		} else {
+			System.out.println("ERORR_2 while checking the sum of the Ms<<================");
+			//return;
+		}
+
+		if (OutputPlaceNames.size() == 1) {
+			DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+
+			Qplace resD = new Qplace(new Psivector(4), QplacePrintSetting.PsiOnly);
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+
+//			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
+//			double theValue_2 = ((m1_2 * 1) + (m2_2 * 2) + (m3_2 * 3) + (m4_2 * 4));
+
+			int index = 0;
+			for (int i = 0; i < Ms_1.size(); i++) {
+				for (int j = 0; j < Ms_2.size(); j++) {
+
+					double theValue = Ms_1.get(i) * Ms_2.get(j);
+					if (theValue > 0) {
+						switch (QFlrs.Parts.get(index).Input1) {
+						case A1:
+							resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+							break;
+						case A2:
+							resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+							break;
+						case A3:
+							resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+							break;
+						case A4:
+							resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+							break;
+						}
+					}
+					index++;
+				}
+			}
+
+			result.SetName(OutputPlaceNames.get(0));
+			result.SetValue(resD);
+
+			util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result);
+		} else {
+			DataQplace result1 = (DataQplace) ((DataQplace) input1).clone();
+			DataQplace result2 = (DataQplace) ((DataQplace) input1).clone();
+
+			Qplace resD1 = new Qplace(new Psivector(4), QplacePrintSetting.PsiOnly);
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+
+			//double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
+			int index = 0;
+			for (int i = 0; i < Ms_1.size(); i++) {
+				for (int j = 0; j < Ms_2.size(); j++) {
+
+					double theValue = Ms_1.get(i) * Ms_2.get(j);
+					if (theValue > 0) {
+						switch (QFlrs.Parts.get(index).Input1) {
+						case A1:
+							resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+							break;
+						case A2:
+							resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+							break;
+						case A3:
+							resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+							break;
+						case A4:
+							resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+							break;
+						}
+					}
+					index++;
+				}
+			}
+
+			result1.SetName(OutputPlaceNames.get(0));
+			result1.SetValue(resD1);
+
+			util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result1);
+			// -----------------------------------------------------------------------------------
+			Qplace resD2 = new Qplace(new Psivector(4), QplacePrintSetting.PsiOnly);
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+
+		    index = 0;
+			for (int i = 0; i < Ms_1.size(); i++) {
+				for (int j = 0; j < Ms_2.size(); j++) {
+
+					double theValue = Ms_1.get(i) * Ms_2.get(j);
+					if (theValue > 0) {
+						switch (QFlrs.Parts.get(index).Input2) {
+						case A1:
+							resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+							break;
+						case A2:
+							resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+							break;
+						case A3:
+							resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+							break;
+						case A4:
+							resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+							break;
+						}
+					}
+					index++;
+				}
+			}
+			result2.SetName(OutputPlaceNames.get(1));
+			result2.SetValue(resD2);
+
+			util.SetToListByName(OutputPlaceNames.get(1), Parent.Parent.PlaceList, result2);
+		}
+	}
+
+	private void QFLRSMethod1Input() throws CloneNotSupportedException {
+		PetriObject input1 = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+
+		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
+
+		double miu1 = INPUT1.Value.V.QBits.get(0).Beta.Real * INPUT1.Value.V.QBits.get(0).Beta.Real;
+		double miu1Bar = INPUT1.Value.V.QBits.get(0).Alpha.Real * INPUT1.Value.V.QBits.get(0).Alpha.Real;
+		double miu2 = INPUT1.Value.V.QBits.get(1).Beta.Real * INPUT1.Value.V.QBits.get(1).Beta.Real;
+		double miu2Bar = INPUT1.Value.V.QBits.get(1).Alpha.Real * INPUT1.Value.V.QBits.get(1).Alpha.Real;
+
+		double m1 = miu1Bar * miu2Bar;
+		double m2 = miu1Bar * miu2;
+		double m3 = miu1 * miu2Bar;
+		double m4 = miu1 * miu2;
+
+		if (m1 + m2 + m3 + m4 <0.999) {
+			System.out.println("Check completed");
+		} else {
+			System.out.println("ERORR while checking the sum of the Ms<<================");
+			//return;
+		}
+
+		if (OutputPlaceNames.size() == 1) {
+			DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+
+			Qplace resD = new Qplace(new Psivector(4), QplacePrintSetting.PsiOnly);
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+
+			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
+			if (m1 > 0)// A1
+			{
+				switch (QFlrs.Parts.get(0).Input1) {
+				case A1:
+					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m2 > 0)// A2
+			{
+				switch (QFlrs.Parts.get(1).Input1) {
+				case A1:
+					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m3 > 0)// A3
+			{
+				switch (QFlrs.Parts.get(2).Input1) {
+				case A1:
+					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m4 > 0)// A4
+			{
+				switch (QFlrs.Parts.get(3).Input1) {
+				case A1:
+					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+
+			result.SetName(OutputPlaceNames.get(0));
+			result.SetValue(resD);
+
+			util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result);
+		} else {
+			DataQplace result1 = (DataQplace) ((DataQplace) input1).clone();
+			DataQplace result2 = (DataQplace) ((DataQplace) input1).clone();
+
+			Qplace resD1 = new Qplace(new Psivector(4), QplacePrintSetting.PsiOnly);
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+
+			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
+			if (m1 > 0)// A1
+			{
+				switch (QFlrs.Parts.get(0).Input1) {
+				case A1:
+					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m2 > 0)// A2
+			{
+				switch (QFlrs.Parts.get(1).Input1) {
+				case A1:
+					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m3 > 0)// A3
+			{
+				switch (QFlrs.Parts.get(2).Input1) {
+				case A1:
+					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m4 > 0)// A4
+			{
+				switch (QFlrs.Parts.get(3).Input1) {
+				case A1:
+					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+
+			result1.SetName(OutputPlaceNames.get(0));
+			result1.SetValue(resD1);
+
+			util.SetToListByName(OutputPlaceNames.get(0), Parent.Parent.PlaceList, result1);
+
+			// -----------------------------------------------------------------------------------
+			Qplace resD2 = new Qplace(new Psivector(4), QplacePrintSetting.PsiOnly);
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
+
+			if (m1 > 0)// A1
+			{
+				switch (QFlrs.Parts.get(0).Input2) {
+				case A1:
+					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m2 > 0)// A2
+			{
+				switch (QFlrs.Parts.get(1).Input2) {
+				case A1:
+					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m3 > 0)// A3
+			{
+				switch (QFlrs.Parts.get(2).Input2) {
+				case A1:
+					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+			if (m4 > 0)// A4
+			{
+				switch (QFlrs.Parts.get(3).Input2) {
+				case A1:
+					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+					break;
+				case A2:
+					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+					break;
+				case A3:
+					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+					break;
+				case A4:
+					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+					break;
+				}
+			}
+
+			result2.SetName(OutputPlaceNames.get(1));
+			result2.SetValue(resD2);
+
+			util.SetToListByName(OutputPlaceNames.get(1), Parent.Parent.PlaceList, result2);
+		}
+
+	}
+
+	private void FuzzyANDOneQbit() throws CloneNotSupportedException {
+		PetriObject input1 = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+
 		PetriObject input2 = util.GetFromListByName(InputPlaceNames.get(1), Parent.TempMarking);
 		if (input2 == null && !(input2 instanceof DataQplace)) {
 			return;
@@ -312,17 +786,79 @@ public class Activation implements Serializable {
 		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
 		DataQplace INPUT2 = (DataQplace) ((DataQplace) input2).clone();
 		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
-		//Qplace resC = (Qplace) result.GetValue();
-		Qplace resD = new Qplace(new Vvector(INPUT1.Value.V.Size, INPUT1.Value.V.QBits),INPUT1.Value.PrintingSetting);
-	
-		
-		resD.V.QBits.get(0).Beta = util.Prod((INPUT1.Value.V.QBits.get(0).Beta),(INPUT2.Value.V.QBits.get(0).Beta));
-		
+
+		Qplace resD = new Qplace(new Vvector(INPUT1.Value.V.Size, INPUT1.Value.V.QBits), INPUT1.Value.PrintingSetting);
+
+		// beta = b1*b2
+		// double beta = INPUT1.Value.V.QBits.get(0).Beta.Real*
+		// INPUT2.Value.V.QBits.get(0).Beta.Real;
+		resD.V.QBits.get(0).Beta.Prod(INPUT2.Value.V.QBits.get(0).Beta);
+		// resD.V.QBits.get(0).Beta = new ComplexValue((float) beta, 0.0f);
+
+		double theta = Math.acos((double) resD.V.QBits.get(0).Beta.Real);
+		double alpha = Math.sin(theta);
+
+		// theta = arcos (b1.b2)
+		// alpha = sin (theta)
+		resD.V.QBits.get(0).Alpha = new ComplexValue((float) alpha, (float) alpha);
+
 		result.SetName(OutputPlaceName);
 		result.SetValue(resD);
 
 		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
-		
+
+	}
+
+	private void FuzzyANDTwoQbits() throws CloneNotSupportedException {
+		PetriObject input1 = util.GetFromListByName(InputPlaceNames.get(0), Parent.TempMarking);
+		if (input1 == null && !(input1 instanceof DataQplace)) {
+			return;
+		}
+
+		PetriObject input2 = util.GetFromListByName(InputPlaceNames.get(1), Parent.TempMarking);
+		if (input2 == null && !(input2 instanceof DataQplace)) {
+			return;
+		}
+
+		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
+		DataQplace INPUT2 = (DataQplace) ((DataQplace) input2).clone();
+		DataQplace result = (DataQplace) ((DataQplace) input1).clone();
+
+		Qplace resD = new Qplace(new Vvector(INPUT1.Value.V.Size, INPUT1.Value.V.QBits), INPUT1.Value.PrintingSetting);
+
+		// 1st Qbit
+		// beta = b1*b2
+		// double beta = INPUT1.Value.V.QBits.get(0).Beta.Real*
+		// INPUT2.Value.V.QBits.get(0).Beta.Real;
+		resD.V.QBits.get(0).Beta.Prod(INPUT2.Value.V.QBits.get(0).Beta);
+		// resD.V.QBits.get(0).Beta = new ComplexValue((float) beta, 0.0f);
+
+		double theta = Math.acos((double) resD.V.QBits.get(0).Beta.Real);
+		double alpha = Math.sin(theta);
+
+		// theta = arcos (b1.b2)
+		// alpha = sin (theta)
+		resD.V.QBits.get(0).Alpha = new ComplexValue((float) alpha, (float) alpha);
+
+		// 2nt Qbit
+		// beta = b1*b2
+		// double beta2 = INPUT1.Value.V.QBits.get(1).Beta.Real *
+		// INPUT2.Value.V.QBits.get(0).Beta.Real;
+		resD.V.QBits.get(1).Beta.Prod(INPUT2.Value.V.QBits.get(0).Beta);
+		// resD.V.QBits.get(1).Beta = new ComplexValue((float) beta2, 0.0f);
+
+		double theta2 = Math.acos((double) resD.V.QBits.get(1).Beta.Real);
+		double alpha2 = Math.sin(theta2);
+
+		// theta = arcos (b1.b2)
+		// alpha = sin (theta)
+		resD.V.QBits.get(1).Alpha = new ComplexValue((float) alpha2, (float) alpha2);
+
+		result.SetName(OutputPlaceName);
+		result.SetValue(resD);
+
+		util.SetToListByName(OutputPlaceName, Parent.Parent.PlaceList, result);
+
 	}
 
 	private void Throughput() throws CloneNotSupportedException {
@@ -945,20 +1481,9 @@ public class Activation implements Serializable {
 			throw new Error("psi is not DataQplace");
 		}
 		DataQplace psi_DataQplace = (DataQplace) psi;
-		// extract qbits in an ordered list
-//				ArrayList<QBit> QBitCollection = new ArrayList<>();
-//				for (int i = 0; i < InputPlaceNames.size(); i++) {
-//					PetriObject input = util.GetFromListByName(InputPlaceNames.get(i), Parent.TempMarking);
-//					if (input == null && !(input instanceof DataQplace)) {
-//						continue;
-//					}
-//					QBitCollection.addAll(((DataQplace) input).Value.V.QBits);
-//				}
-		// result qplace that collect all the qbits after the operation
 		DataQplace result = new DataQplace();
-		Psivector Psi= new Psivector(psi_DataQplace.Value.Psi.Size,new ArrayList<ComplexValue>());
-		result.Value= new Qplace(Psi,  QplacePrintSetting.PsiOnly);
-		// ArrayList<QBit> QBitResultCollection = new ArrayList<>();
+		Psivector Psi = new Psivector(psi_DataQplace.Value.Psi.Size, new ArrayList<ComplexValue>());
+		result.Value = new Qplace(Psi, QplacePrintSetting.PsiOnly);
 
 		// perform operation with matrixes (product)
 		for (int x = 0; x < psi_DataQplace.Value.Psi.Size; x++) {
@@ -1007,7 +1532,7 @@ public class Activation implements Serializable {
 			ArrayList<ComplexValue> sm = new ArrayList<ComplexValue>();
 			for (int i = 0; i < A.Value.Matrix.length; i++) {
 				ComplexValue sum = new ComplexValue(0.0F, 0.0F);
-				ComplexValue cv1 = psi_DataQplace.Value.Psi.ComplexArray.get(x);//QBitCollection.get(x).Alpha;
+				ComplexValue cv1 = psi_DataQplace.Value.Psi.ComplexArray.get(x);// QBitCollection.get(x).Alpha;
 				Float real = A.Value.Matrix[i][0].Value * cv1.Real;
 				Float imaginary = A.Value.Matrix[i][0].Value * cv1.Imaginary;
 				ComplexValue cv2 = new ComplexValue(real, imaginary);
@@ -1024,9 +1549,8 @@ public class Activation implements Serializable {
 				// resD.Psi.ComplexArray.set(i, sum);
 				result.Value.Psi.ComplexArray.add(sum);
 			}
-			
-			
-			//QBitResultCollection.add(new QBit(sm.get(0), sm.get(1)));
+
+			// QBitResultCollection.add(new QBit(sm.get(0), sm.get(1)));
 		}
 
 		result.SetName(OutputPlaceName);

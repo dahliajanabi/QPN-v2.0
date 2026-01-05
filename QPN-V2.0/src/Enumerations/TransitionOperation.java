@@ -27,5 +27,7 @@ public enum TransitionOperation implements Serializable{
 	UnitaryMatrixWithLoop,
 	PsiIntersectionSplit,
 	ThetaUnitaryMatrixPsi,
-	FuzzyAND
+	FuzzificationOneQbit,
+	FuzzificationTwoQbits,
+	QFLRS
 }
