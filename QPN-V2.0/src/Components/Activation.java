@@ -331,50 +331,89 @@ public class Activation implements Serializable {
 
 		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
 		DataQplace INPUT2 = (DataQplace) ((DataQplace) input2).clone();
+		ArrayList<Double> Ms_1;
+		ArrayList<Double> Ms_2;
+		
+		if (INPUT1.Value.V!=null){
+			
+			System.out.println("Error V vector");
+			return;
 
-		double miu1 = INPUT1.Value.V.QBits.get(0).Beta.Real * INPUT1.Value.V.QBits.get(0).Beta.Real;
-		double miu1Bar = INPUT1.Value.V.QBits.get(0).Alpha.Real * INPUT1.Value.V.QBits.get(0).Alpha.Real;
-		double miu2 = INPUT1.Value.V.QBits.get(1).Beta.Real * INPUT1.Value.V.QBits.get(1).Beta.Real;
-		double miu2Bar = INPUT1.Value.V.QBits.get(1).Alpha.Real * INPUT1.Value.V.QBits.get(1).Alpha.Real;
+//		double miu1 = INPUT1.Value.V.QBits.get(0).Beta.Real * INPUT1.Value.V.QBits.get(0).Beta.Real;
+//		double miu1Bar = INPUT1.Value.V.QBits.get(0).Alpha.Real * INPUT1.Value.V.QBits.get(0).Alpha.Real;
+//		double miu2 = INPUT1.Value.V.QBits.get(1).Beta.Real * INPUT1.Value.V.QBits.get(1).Beta.Real;
+//		double miu2Bar = INPUT1.Value.V.QBits.get(1).Alpha.Real * INPUT1.Value.V.QBits.get(1).Alpha.Real;
+//
+//		double m1 = miu1Bar * miu2Bar;
+//		double m2 = miu1Bar * miu2;
+//		double m3 = miu1 * miu2Bar;
+//		double m4 = miu1 * miu2;
+//		Ms_1 = new ArrayList<Double>();
+//		Ms_1.add(m1);
+//		Ms_1.add(m2);
+//		Ms_1.add(m3);
+//		Ms_1.add(m4);
+//		System.out.println(Parent.TransitionName+" "+ InputPlaceNames.get(0) + ":" + "m1:" + m1 + " m2:" + m2 + " m3:" + m3 + " m4:" + m4 
+//				+ "\n"+ "sum="+ (m1+m2+m3+m4));
 
-		double m1 = miu1Bar * miu2Bar;
-		double m2 = miu1Bar * miu2;
-		double m3 = miu1 * miu2Bar;
-		double m4 = miu1 * miu2;
-		ArrayList<Double> Ms_1 = new ArrayList<Double>();
+	} else {
+		double m1 = INPUT1.Value.Psi.ComplexArray.get(0).Real;
+		double m2 = INPUT1.Value.Psi.ComplexArray.get(1).Real;
+		double m3 = INPUT1.Value.Psi.ComplexArray.get(2).Real;
+		double m4 = INPUT1.Value.Psi.ComplexArray.get(3).Real;
+		Ms_1 = new ArrayList<Double>();
 		Ms_1.add(m1);
 		Ms_1.add(m2);
 		Ms_1.add(m3);
 		Ms_1.add(m4);
+		System.out.println(Parent.TransitionName+" "+ InputPlaceNames.get(0) + ":" + "m1:" + m1 + " m2:" + m2 + " m3:" + m3 + " m4:" + m4
+				+ "\n"+ "sum="+ (m1+m2+m3+m4));
 
-		if (m1 + m2 + m3 + m4 <0.999 ) {
-			System.out.println("Check completed");
+	}
+
+//		if (m1 + m2 + m3 + m4 <0.999 ) {
+//			System.out.println("Check completed");
+//		} else {
+//			System.out.println("ERORR while checking the sum of the Ms<<================");
+//			//return;
+		
+		if (INPUT2.Value.V!=null){
+
+			System.out.println("Error V vector");
+			return;
+//		double miu1_2 = INPUT2.Value.V.QBits.get(0).Beta.Real * INPUT2.Value.V.QBits.get(0).Beta.Real;
+//		double miu1Bar_2 = INPUT2.Value.V.QBits.get(0).Alpha.Real * INPUT2.Value.V.QBits.get(0).Alpha.Real;
+//		double miu2_2 = INPUT2.Value.V.QBits.get(1).Beta.Real * INPUT2.Value.V.QBits.get(1).Beta.Real;
+//		double miu2Bar_2 = INPUT2.Value.V.QBits.get(1).Alpha.Real * INPUT2.Value.V.QBits.get(1).Alpha.Real;
+//
+//		double m1_2 = miu1Bar_2 * miu2Bar_2;
+//		double m2_2 = miu1Bar_2 * miu2_2;
+//		double m3_2 = miu1_2 * miu2Bar_2;
+//		double m4_2 = miu1_2 * miu2_2;
+//		Ms_2 = new ArrayList<Double>();
+//		Ms_2.add(m1_2);
+//		Ms_2.add(m2_2);
+//		Ms_2.add(m3_2);
+//		Ms_2.add(m4_2);
 		} else {
-			System.out.println("ERORR while checking the sum of the Ms<<================");
-			//return;
+			double m1 = INPUT2.Value.Psi.ComplexArray.get(0).Real;
+			double m2 = INPUT2.Value.Psi.ComplexArray.get(1).Real;
+			double m3 = INPUT2.Value.Psi.ComplexArray.get(2).Real;
+			double m4 = INPUT2.Value.Psi.ComplexArray.get(3).Real;
+			Ms_2 = new ArrayList<Double>();
+			Ms_2.add(m1);
+			Ms_2.add(m2);
+			Ms_2.add(m3);
+			Ms_2.add(m4);
+			System.out.println(Parent.TransitionName+" "+ InputPlaceNames.get(1)+ ":" + "m1:" + m1 + " m2:" + m2 + " m3:" + m3 + " m4:" + m4
+					+ "\n"+ "sum="+ (m1+m2+m3+m4));
 		}
-
-		double miu1_2 = INPUT2.Value.V.QBits.get(0).Beta.Real * INPUT2.Value.V.QBits.get(0).Beta.Real;
-		double miu1Bar_2 = INPUT2.Value.V.QBits.get(0).Alpha.Real * INPUT2.Value.V.QBits.get(0).Alpha.Real;
-		double miu2_2 = INPUT2.Value.V.QBits.get(1).Beta.Real * INPUT2.Value.V.QBits.get(1).Beta.Real;
-		double miu2Bar_2 = INPUT2.Value.V.QBits.get(1).Alpha.Real * INPUT2.Value.V.QBits.get(1).Alpha.Real;
-
-		double m1_2 = miu1Bar_2 * miu2Bar_2;
-		double m2_2 = miu1Bar_2 * miu2_2;
-		double m3_2 = miu1_2 * miu2Bar_2;
-		double m4_2 = miu1_2 * miu2_2;
-		ArrayList<Double> Ms_2 = new ArrayList<Double>();
-		Ms_2.add(m1_2);
-		Ms_2.add(m2_2);
-		Ms_2.add(m3_2);
-		Ms_2.add(m4_2);
-
-		if (m1_2 + m2_2 + m3_2 + m4_2 <0.999 ) {
-			System.out.println("Check_2 completed");
-		} else {
-			System.out.println("ERORR_2 while checking the sum of the Ms<<================");
-			//return;
-		}
+//		if (m1_2 + m2_2 + m3_2 + m4_2 <0.999 ) {
+//			System.out.println("Check_2 completed");
+//		} else {
+//			System.out.println("ERORR_2 while checking the sum of the Ms<<================");
+//			//return;
+//		}
 
 		if (OutputPlaceNames.size() == 1) {
 			DataQplace result = (DataQplace) ((DataQplace) input1).clone();
@@ -394,7 +433,7 @@ public class Activation implements Serializable {
 
 					double theValue = Ms_1.get(i) * Ms_2.get(j);
 					if (theValue > 0) {
-						switch (QFlrs.Parts.get(index).Input1) {
+						switch (QFlrs.Parts.get(index).Value.Value1) {
 						case A1:
 							resD.Psi.ComplexArray.get(0).Real += (float) theValue;
 							break;
@@ -434,7 +473,7 @@ public class Activation implements Serializable {
 
 					double theValue = Ms_1.get(i) * Ms_2.get(j);
 					if (theValue > 0) {
-						switch (QFlrs.Parts.get(index).Input1) {
+						switch (QFlrs.Parts.get(index).Value.Value1) {
 						case A1:
 							resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
 							break;
@@ -470,7 +509,7 @@ public class Activation implements Serializable {
 
 					double theValue = Ms_1.get(i) * Ms_2.get(j);
 					if (theValue > 0) {
-						switch (QFlrs.Parts.get(index).Input2) {
+						switch (QFlrs.Parts.get(index).Value.Value2) {
 						case A1:
 							resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
 							break;
@@ -502,23 +541,55 @@ public class Activation implements Serializable {
 		}
 
 		DataQplace INPUT1 = (DataQplace) ((DataQplace) input1).clone();
-
-		double miu1 = INPUT1.Value.V.QBits.get(0).Beta.Real * INPUT1.Value.V.QBits.get(0).Beta.Real;
-		double miu1Bar = INPUT1.Value.V.QBits.get(0).Alpha.Real * INPUT1.Value.V.QBits.get(0).Alpha.Real;
-		double miu2 = INPUT1.Value.V.QBits.get(1).Beta.Real * INPUT1.Value.V.QBits.get(1).Beta.Real;
-		double miu2Bar = INPUT1.Value.V.QBits.get(1).Alpha.Real * INPUT1.Value.V.QBits.get(1).Alpha.Real;
-
-		double m1 = miu1Bar * miu2Bar;
-		double m2 = miu1Bar * miu2;
-		double m3 = miu1 * miu2Bar;
-		double m4 = miu1 * miu2;
-
-		if (m1 + m2 + m3 + m4 <0.999) {
-			System.out.println("Check completed");
-		} else {
-			System.out.println("ERORR while checking the sum of the Ms<<================");
-			//return;
+		double m1, m2, m3, m4;
+		ArrayList<Double> Ms_1;
+		ArrayList<Double> Ms_2;
+		
+		if (INPUT1.Value.V!=null){
+			System.out.println("ERROR V vector");
+			return;
+			
+//		double miu1 = INPUT1.Value.V.QBits.get(0).Beta.Real * INPUT1.Value.V.QBits.get(0).Beta.Real;
+//		double miu1Bar = INPUT1.Value.V.QBits.get(0).Alpha.Real * INPUT1.Value.V.QBits.get(0).Alpha.Real;
+//		double miu2 = INPUT1.Value.V.QBits.get(1).Beta.Real * INPUT1.Value.V.QBits.get(1).Beta.Real;
+//		double miu2Bar = INPUT1.Value.V.QBits.get(1).Alpha.Real * INPUT1.Value.V.QBits.get(1).Alpha.Real;
+//
+//		m1 = miu1Bar * miu2Bar;
+//		m2 = miu1Bar * miu2;
+//		m3 = miu1 * miu2Bar;
+//		m4 = miu1 * miu2;
+//		
+//		Ms_1 = new ArrayList<Double>();
+//		Ms_1.add(m1);
+//		Ms_1.add(m2);
+//		Ms_1.add(m3);
+//		Ms_1.add(m4);
+//		
+//		System.out.println(Parent.TransitionName+" "+ InputPlaceNames.get(0)+ ":" + "m1:" + m1 + " m2:" + m2 + " m3:" + m3 + " m4:" + m4
+//				+ "\n"+ "sum="+ (m1+m2+m3+m4));
+//		
+		}else {
+			m1 = INPUT1.Value.Psi.ComplexArray.get(0).Real;
+			m2 = INPUT1.Value.Psi.ComplexArray.get(1).Real;
+			m3 = INPUT1.Value.Psi.ComplexArray.get(2).Real;
+			m4 = INPUT1.Value.Psi.ComplexArray.get(3).Real;
+			
+			Ms_1 = new ArrayList<Double>();
+			Ms_1.add(m1);
+			Ms_1.add(m2);
+			Ms_1.add(m3);
+			Ms_1.add(m4);
+			
+			System.out.println(Parent.TransitionName+" "+ InputPlaceNames.get(0) + ":" + "m1:" + m1 + " m2:" + m2 + " m3:" + m3 + " m4:" + m4
+					+ "\n"+ "sum="+ (m1+m2+m3+m4));
 		}
+
+//		if (m1 + m2 + m3 + m4 <0.999) {
+//			System.out.println("Check completed");
+//		} else {
+//			System.out.println("ERORR while checking the sum of the Ms<<================");
+//			//return;
+//		}
 
 		if (OutputPlaceNames.size() == 1) {
 			DataQplace result = (DataQplace) ((DataQplace) input1).clone();
@@ -529,75 +600,97 @@ public class Activation implements Serializable {
 			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
 			resD.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
 
-			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
-			if (m1 > 0)// A1
-			{
-				switch (QFlrs.Parts.get(0).Input1) {
-				case A1:
-					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
+//			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
+//			if (m1 > 0)// A1
+//			{
+//				switch (QFlrs.Parts.get(0).Input1) {
+//				case A1:
+//					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m2 > 0)// A2
+//			{
+//				switch (QFlrs.Parts.get(1).Input1) {
+//				case A1:
+//					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m3 > 0)// A3
+//			{
+//				switch (QFlrs.Parts.get(2).Input1) {
+//				case A1:
+//					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m4 > 0)// A4
+//			{
+//				switch (QFlrs.Parts.get(3).Input1) {
+//				case A1:
+//					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+			int index = 0;
+			for (int i = 0; i < 4; i++) {
+
+					double theValue = Ms_1.get(i);
+					if (theValue > 0) {
+						switch (QFlrs.Parts.get(index).Value.Value1) {
+						case A1:
+							resD.Psi.ComplexArray.get(0).Real += (float) theValue;
+							break;
+						case A2:
+							resD.Psi.ComplexArray.get(1).Real += (float) theValue;
+							break;
+						case A3:
+							resD.Psi.ComplexArray.get(2).Real += (float) theValue;
+							break;
+						case A4:
+							resD.Psi.ComplexArray.get(3).Real += (float) theValue;
+							break;
+						}
+					}
+					index++;
 				}
-			}
-			if (m2 > 0)// A2
-			{
-				switch (QFlrs.Parts.get(1).Input1) {
-				case A1:
-					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
-			if (m3 > 0)// A3
-			{
-				switch (QFlrs.Parts.get(2).Input1) {
-				case A1:
-					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
-			if (m4 > 0)// A4
-			{
-				switch (QFlrs.Parts.get(3).Input1) {
-				case A1:
-					resD.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
 
 			result.SetName(OutputPlaceNames.get(0));
 			result.SetValue(resD);
@@ -613,75 +706,98 @@ public class Activation implements Serializable {
 			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
 			resD1.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
 
-			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
-			if (m1 > 0)// A1
-			{
-				switch (QFlrs.Parts.get(0).Input1) {
-				case A1:
-					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
+//			double theValue = ((m1 * 1) + (m2 * 2) + (m3 * 3) + (m4 * 4));
+//			if (m1 > 0)// A1
+//			{
+//				switch (QFlrs.Parts.get(0).Input1) {
+//				case A1:
+//					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m2 > 0)// A2
+//			{
+//				switch (QFlrs.Parts.get(1).Input1) {
+//				case A1:
+//					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m3 > 0)// A3
+//			{
+//				switch (QFlrs.Parts.get(2).Input1) {
+//				case A1:
+//					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m4 > 0)// A4
+//			{
+//				switch (QFlrs.Parts.get(3).Input1) {
+//				case A1:
+//					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+			
+			int index = 0;
+			for (int i = 0; i < 4; i++) {
+
+					double theValue = Ms_1.get(i);
+					if (theValue > 0) {
+						switch (QFlrs.Parts.get(index).Value.Value1) {
+						case A1:
+							resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
+							break;
+						case A2:
+							resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
+							break;
+						case A3:
+							resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
+							break;
+						case A4:
+							resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
+							break;
+						}
+					}
+					index++;
 				}
-			}
-			if (m2 > 0)// A2
-			{
-				switch (QFlrs.Parts.get(1).Input1) {
-				case A1:
-					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
-			if (m3 > 0)// A3
-			{
-				switch (QFlrs.Parts.get(2).Input1) {
-				case A1:
-					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
-			if (m4 > 0)// A4
-			{
-				switch (QFlrs.Parts.get(3).Input1) {
-				case A1:
-					resD1.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD1.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD1.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD1.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
 
 			result1.SetName(OutputPlaceNames.get(0));
 			result1.SetValue(resD1);
@@ -695,74 +811,97 @@ public class Activation implements Serializable {
 			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
 			resD2.Psi.ComplexArray.add(new ComplexValue(0.0f, 0.0f));
 
-			if (m1 > 0)// A1
-			{
-				switch (QFlrs.Parts.get(0).Input2) {
-				case A1:
-					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
+//			if (m1 > 0)// A1
+//			{
+//				switch (QFlrs.Parts.get(0).Input2) {
+//				case A1:
+//					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m2 > 0)// A2
+//			{
+//				switch (QFlrs.Parts.get(1).Input2) {
+//				case A1:
+//					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m3 > 0)// A3
+//			{
+//				switch (QFlrs.Parts.get(2).Input2) {
+//				case A1:
+//					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+//			if (m4 > 0)// A4
+//			{
+//				switch (QFlrs.Parts.get(3).Input2) {
+//				case A1:
+//					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+//					break;
+//				case A2:
+//					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+//					break;
+//				case A3:
+//					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+//					break;
+//				case A4:
+//					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+//					break;
+//				}
+//			}
+			
+			int index2 = 0;
+			for (int i = 0; i < 4; i++) {
+
+					double theValue = Ms_1.get(i);
+					if (theValue > 0) {
+						switch (QFlrs.Parts.get(index2).Input1) {
+						case A1:
+							resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
+							break;
+						case A2:
+							resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
+							break;
+						case A3:
+							resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
+							break;
+						case A4:
+							resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
+							break;
+						}
+					}
+					index2++;
 				}
-			}
-			if (m2 > 0)// A2
-			{
-				switch (QFlrs.Parts.get(1).Input2) {
-				case A1:
-					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
-			if (m3 > 0)// A3
-			{
-				switch (QFlrs.Parts.get(2).Input2) {
-				case A1:
-					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
-			if (m4 > 0)// A4
-			{
-				switch (QFlrs.Parts.get(3).Input2) {
-				case A1:
-					resD2.Psi.ComplexArray.get(0).Real += (float) theValue;
-					break;
-				case A2:
-					resD2.Psi.ComplexArray.get(1).Real += (float) theValue;
-					break;
-				case A3:
-					resD2.Psi.ComplexArray.get(2).Real += (float) theValue;
-					break;
-				case A4:
-					resD2.Psi.ComplexArray.get(3).Real += (float) theValue;
-					break;
-				}
-			}
 
 			result2.SetName(OutputPlaceNames.get(1));
 			result2.SetValue(resD2);
